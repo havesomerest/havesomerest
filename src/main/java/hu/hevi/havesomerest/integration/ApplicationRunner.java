@@ -17,7 +17,7 @@ class ApplicationRunner {
         try {
             Path rootPath = Paths.get("src/test/rest").toAbsolutePath();
 
-            Map<Path, Optional<EndPoint>> filesInDirectory = new HashMap<>();
+            Map<Path, Optional<EndPoint.EndPointBuilder>> filesInDirectory = new HashMap<>();
             Files.walk(rootPath)
                  .filter(p -> !p.equals(rootPath))
                  .sorted((a, b) -> orderDirFile(a, b))
@@ -25,13 +25,14 @@ class ApplicationRunner {
                     //// GET THE FILES IN A DIRECTORY
 
                      if (!Files.isDirectory(path)) {
-                         Optional<EndPoint> endPoint = Optional.ofNullable(filesInDirectory.get(path.getParent()))
-                                                               .orElse(Optional.of(new EndPoint()));
+                         Optional<EndPoint.EndPointBuilder> endPointBuilder = Optional.ofNullable(filesInDirectory.get(getEndPointPath(path)))
+                                                               .orElse(Optional.of(new EndPoint().toBuilder()));
 
-                         endPoint.get().setPath(path.getParent());
-                         Test
-                         endPoint.get().getTests().add(path);
-                         filesInDirectory.put(path.getParent(), endPoint);
+                         endPointBuilder.get().path(getEndPointPath(path));
+
+
+                         endPointBuilder.get().resource(new Resource(path));
+                         filesInDirectory.put(path.getParent(), endPointBuilder);
                      }
 
 
@@ -43,11 +44,15 @@ class ApplicationRunner {
                      System.out.println((Files.isDirectory(path) ? "d" : "f") + " " + path.toAbsolutePath().toString());
                  });
 
-            for (Map.Entry<Path, Optional<EndPoint>> entry : filesInDirectory.entrySet()) {
-                EndPoint endPoint = entry.getValue().get();
+            for (Map.Entry<Path, Optional<EndPoint.EndPointBuilder>> entry : filesInDirectory.entrySet()) {
+                EndPoint.EndPointBuilder endPointBuilder = entry.getValue().get();
+                EndPoint endPoint = endPointBuilder.build();
                 log.info(endPoint.getPath().toString());
-                endPoint.getFiles().forEach(f -> {
-                    log.info(f.getFileName().toString());
+                endPoint.getResources().forEach(f -> {
+                    log.info(f.getPath().toString());
+                    f.ifPost(() -> {
+                        System.out.println("POOOOOST");
+                    });
                 });
             }
 //
@@ -58,6 +63,10 @@ class ApplicationRunner {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Path getEndPointPath(Path path) {
+        return path.getParent();
     }
 
     private List<Path> absolutePath(Path path, Path rootPath) {

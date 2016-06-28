@@ -1,14 +1,19 @@
 package hu.hevi.havesomerest.integration;
 
-import lombok.Data;
+import lombok.*;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class EndPoint {
 
     private Path path;
-    private List<Test> tests = new ArrayList<>();
+    @Singular
+    private List<Resource> resources = new ArrayList<>();
+
 }
