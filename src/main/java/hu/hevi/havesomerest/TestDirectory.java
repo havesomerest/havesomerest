@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest.integration;
+package hu.hevi.havesomerest;
 
 import lombok.*;
 

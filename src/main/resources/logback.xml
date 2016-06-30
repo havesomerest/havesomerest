@@ -23,7 +23,7 @@
 	</appender>
 	<logger name="org.springframework.integration.file" level="WARN" />
     <logger name="org.springframework" level="WARN" />
-    <logger name="hu.hevi.havesomerest.integration.SampleIntegrationApplication" level="WARN" />
+    <logger name="hu.hevi.havesomerest.SampleIntegrationApplication" level="WARN" />
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />

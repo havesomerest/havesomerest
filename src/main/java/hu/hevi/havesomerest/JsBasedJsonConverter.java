@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest.integration;
+package hu.hevi.havesomerest;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.springframework.beans.factory.annotation.Autowired;

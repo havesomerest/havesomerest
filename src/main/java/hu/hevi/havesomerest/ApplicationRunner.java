@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest.integration;
+package hu.hevi.havesomerest;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import lombok.extern.slf4j.Slf4j;
