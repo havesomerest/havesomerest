@@ -1,8 +1,11 @@
 package hu.hevi.havesomerest.integration;
 
-import lombok.extern.java.Log;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,14 +13,19 @@ import java.nio.file.Paths;
 import java.util.*;
 
 @Component
-@Log
+@Slf4j
 class ApplicationRunner {
+
+    public static final String RESPONSE = "response";
+    public static final String REQUEST = "request";
+    @Autowired
+    private JsBasedJsonConverter jsonConverter;
 
     void run() {
         try {
             Path rootPath = Paths.get("src/test/rest").toAbsolutePath();
 
-            Map<Path, Optional<EndPoint.EndPointBuilder>> filesInDirectory = new HashMap<>();
+            Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> filesInDirectory = new HashMap<>();
             Files.walk(rootPath)
                  .filter(p -> !p.equals(rootPath))
                  .sorted((a, b) -> orderDirFile(a, b))
@@ -25,17 +33,13 @@ class ApplicationRunner {
                     //// GET THE FILES IN A DIRECTORY
 
                      if (!Files.isDirectory(path)) {
-                         Optional<EndPoint.EndPointBuilder> endPointBuilder = Optional.ofNullable(filesInDirectory.get(getEndPointPath(path)))
-                                                               .orElse(Optional.of(new EndPoint().toBuilder()));
+                         Optional<TestDirectory.TestDirectoryBuilder> testDirectoryBuilder = Optional.ofNullable(filesInDirectory.get(getTestFolderPath(path)))
+                                                                                           .orElse(Optional.of(new TestDirectory().toBuilder()));
 
-                         endPointBuilder.get().path(getEndPointPath(path));
-
-
-                         endPointBuilder.get().resource(new Resource(path));
-                         filesInDirectory.put(path.getParent(), endPointBuilder);
+                         testDirectoryBuilder.get().testFolder(getTestFolderPath(path));
+                         testDirectoryBuilder.get().file(new TestCase(path));
+                         filesInDirectory.put(path.getParent(), testDirectoryBuilder);
                      }
-
-
 
                      ////////
                      absolutePath(path, rootPath).forEach(p -> {
@@ -44,28 +48,64 @@ class ApplicationRunner {
                      System.out.println((Files.isDirectory(path) ? "d" : "f") + " " + path.toAbsolutePath().toString());
                  });
 
-            for (Map.Entry<Path, Optional<EndPoint.EndPointBuilder>> entry : filesInDirectory.entrySet()) {
-                EndPoint.EndPointBuilder endPointBuilder = entry.getValue().get();
-                EndPoint endPoint = endPointBuilder.build();
-                log.info(endPoint.getPath().toString());
-                endPoint.getResources().forEach(f -> {
-                    log.info(f.getPath().toString());
+
+
+
+
+
+
+
+            //for (Map.Entry<Path, Optional<TestDirectory.TestDirectoryBuilder>> entry : filesInDirectory.entrySet()) {
+            filesInDirectory.entrySet().forEach((entry) -> {
+                TestDirectory.TestDirectoryBuilder endPointBuilder = entry.getValue().get();
+                TestDirectory testDirectory = endPointBuilder.build();
+                //log.info(testDirectory.getTestFolder().toString());
+                testDirectory.getFiles().forEach(f -> {
+                    //log.info(f.getPath().toString());
                     f.ifPost(() -> {
                         System.out.println("POOOOOST");
                     });
+
+                    try {
+                        FileInputStream fis = new FileInputStream(f.getPath().toFile());
+
+                        String s = new String(Files.readAllBytes(f.getPath()));
+                        System.out.println(s);
+
+
+                        if (f.getFileName().endsWith(".json")) {
+                            ScriptObjectMirror convert = jsonConverter.convertToObject(s);
+
+                            Test.TestBuilder testBuilder = Test.builder();
+                            if (convert.containsKey(REQUEST)) {
+                                testBuilder.request((ScriptObjectMirror) convert.get(REQUEST)).build();
+                            }
+                            if (convert.containsKey(RESPONSE)) {
+                                testBuilder.request((ScriptObjectMirror) convert.get(RESPONSE)).build();
+                            }
+
+                            System.out.println("COOOONVERT: " + convert.keySet());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
                 });
-            }
+            });
+
+
 //
 //            Files.newDirectoryStream(rootPath).forEach((directoryPath) -> {
-//                Path path = Paths.get(directoryPath.toString());
-//                System.out.println("Current relative path is: " + path.getFileName().toString());
+//                Path testFolder = Paths.get(directoryPath.toString());
+//                System.out.println("Current relative testFolder is: " + testFolder.getFileName().toString());
 //            });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private Path getEndPointPath(Path path) {
+    private Path getTestFolderPath(Path path) {
         return path.getParent();
     }
 

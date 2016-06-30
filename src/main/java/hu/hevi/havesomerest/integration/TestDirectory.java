@@ -2,7 +2,7 @@ package hu.hevi.havesomerest.integration;
 
 import lombok.*;
 
-import java.net.URI;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +10,10 @@ import java.util.List;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class EndPoint {
+public class TestDirectory {
 
-    private URI path;
+    private Path testFolder;
     @Singular
-    private List<TestCase> testCases = new ArrayList<>();
+    private List<TestCase> files = new ArrayList<>();
 
 }

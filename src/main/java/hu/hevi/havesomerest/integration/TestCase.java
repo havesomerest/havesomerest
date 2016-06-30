@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import java.nio.file.Path;
 
 @Data
-public class Resource {
+public class TestCase {
 
     public static final int STATUS_CODE_LENGTH = 3;
     public static final int GET_OR_PUT_LENGTH = 3;
@@ -14,6 +14,8 @@ public class Resource {
     public static final int DELETE_LENGTH = 6;
 
     private final Path path;
+    private TestDBData dbData;
+    private TestDBSchema dBSchema;
 
     public String getFileName() {
         return path.getFileName().toString();

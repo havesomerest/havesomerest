@@ -2,12 +2,6 @@
   "description": {
 
   },
-  "setUp": {
-    "dbInsert": "dbFor"
-  },
-  "tearDown": {
-
-  },
   "request": {
     "parameters": {
 
