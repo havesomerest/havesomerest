@@ -89,8 +89,6 @@ public class ToTestConverter {
             testBuilder.response((ScriptObjectMirror) fileContent.get(RESPONSE)).build();
         }
         if (fileContent.containsKey("description")) {
-            String description = (String) fileContent.get("description");
-
             testBuilder.description(((String) fileContent.get("description"))).build();
         }
         return testBuilder.build();
