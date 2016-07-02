@@ -51,6 +51,8 @@ class ApplicationRunner {
                         entity,
                         String.class);
 
+                System.out.println("Assert: " + response.getBody().equals(test.getResponse()));
+
 
 
                 System.out.println(MessageFormat.format("{0} -> {1}", test.getStatusCode(), response.getStatusCode().toString()));
