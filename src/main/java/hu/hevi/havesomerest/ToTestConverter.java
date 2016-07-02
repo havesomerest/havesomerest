@@ -28,8 +28,12 @@ public class ToTestConverter {
                 TestDirectory testDirectory = testDirectoryBuilder.build();
                 testDirectories.add(testDirectory);
             });
+
         });
-        return getTests(testDirectories).entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
+
+        Set<Test> tests = getTests(testDirectories).entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
+
+        return tests;
     }
 
     Map<String, Test> getTests(List<TestDirectory> testDirectories) {
@@ -37,15 +41,15 @@ public class ToTestConverter {
         testDirectories.stream()
                        .map(TestDirectory::getTestCases)
                        .forEach(testCase -> {
-                           testCase.forEach(t -> {
+                           testCase.forEach(test -> {
                                try {
-                                   String fileContent = new String(Files.readAllBytes(t.getPath()));
-                                   if (isJson(t)) {
-                                       ScriptObjectMirror convert = jsonConverter.convertToObject(fileContent);
+                                   String fileContent = new String(Files.readAllBytes(test.getPath()));
+                                   if (isJson(test)) {
+                                       ScriptObjectMirror convertedObject = jsonConverter.convertToObject(fileContent);
 
-                                       if (isTestFile(t)) {
-                                           Test test = getTest(convert);
-                                           testByFilename.put(t.getFileName(), test);
+                                       if (isTestFile(test)) {
+                                           Test t = getTest(convertedObject);
+                                           testByFilename.put(test.getFileName(), t);
                                        }
                                    }
                                } catch (Exception e) {
