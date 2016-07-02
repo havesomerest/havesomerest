@@ -53,7 +53,7 @@ public class JsBasedJsonConverter {
             eval(reader);
 
             ScriptObjectMirror json = eval("JSON");
-            converted = eval(MessageFormat.format("convertToObject({0})", val));
+            converted = eval(MessageFormat.format("convertToJson({0})", val));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ScriptException e) {

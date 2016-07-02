@@ -8,7 +8,7 @@
 		<version>1.0.2.RELEASE</version>
 	</parent>
 	<artifactId>havesomerest</artifactId>
-	<groupId>hu.hevi.havesomerest</groupId>
+	<groupId>hu.hevi</groupId>
 	<name>Spring Boot Integration Sample</name>
 	<description>Spring Boot Integration Sample</description>
 	<version>1.0-SNAPSHOT</version>
@@ -22,11 +22,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-integration</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-resource</artifactId>
-			<scope>resource</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
