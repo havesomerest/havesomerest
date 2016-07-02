@@ -31,9 +31,29 @@ public class ToTestConverter {
 
         });
 
-        Set<Test> tests = getTests(testDirectories).entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
+        Map<String, Test> testsByFilename = getTests(testDirectories);
+
+        testsByFilename.keySet().forEach(filename -> {
+            String statusCode = getStatusCodeFromFilename(filename);
+
+            Test test = testsByFilename.get(filename);
+            test.setStatusCode(statusCode);
+        });
+
+        Set<Test> tests = testsByFilename.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
 
         return tests;
+    }
+
+    private String getStatusCodeFromFilename(String filename) {
+        String statusCode = "";
+        if (filename.toLowerCase().startsWith("get")) {
+            statusCode = filename.substring(3, 6);
+        }
+        if (filename.toLowerCase().startsWith("post")) {
+            statusCode = filename.substring(4, 7);
+        }
+        return statusCode;
     }
 
     Map<String, Test> getTests(List<TestDirectory> testDirectories) {
@@ -60,13 +80,18 @@ public class ToTestConverter {
         return testByFilename;
     }
 
-    private Test getTest(ScriptObjectMirror convert) {
+    private Test getTest(ScriptObjectMirror fileContent) {
         Test.TestBuilder testBuilder = Test.builder();
-        if (convert.containsKey(REQUEST)) {
-            testBuilder.request((ScriptObjectMirror) convert.get(REQUEST)).build();
+        if (fileContent.containsKey(REQUEST)) {
+            testBuilder.request((ScriptObjectMirror) fileContent.get(REQUEST)).build();
         }
-        if (convert.containsKey(RESPONSE)) {
-            testBuilder.response((ScriptObjectMirror) convert.get(RESPONSE)).build();
+        if (fileContent.containsKey(RESPONSE)) {
+            testBuilder.response((ScriptObjectMirror) fileContent.get(RESPONSE)).build();
+        }
+        if (fileContent.containsKey("description")) {
+            String description = (String) fileContent.get("description");
+
+            testBuilder.description(((String) fileContent.get("description"))).build();
         }
         return testBuilder.build();
     }

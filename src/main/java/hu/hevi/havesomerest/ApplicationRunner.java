@@ -9,6 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +53,8 @@ class ApplicationRunner {
 
 
 
-                System.out.println(response.getStatusCode().toString());
+                System.out.println(MessageFormat.format("{0} -> {1}", test.getStatusCode(), response.getStatusCode().toString()));
+                System.out.println(MessageFormat.format("{0}", test.getDescription()));
             });
 
         } catch (IOException e) {

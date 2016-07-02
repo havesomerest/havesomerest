@@ -1,8 +1,9 @@
 {
-  "description": {
-
-  },
+  "description": "This is the description because I can't think any better at the moment",
   "request": {
+    "headers": {
+
+    },
     "parameters": {
 
     },
