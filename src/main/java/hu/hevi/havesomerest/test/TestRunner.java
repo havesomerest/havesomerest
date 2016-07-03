@@ -56,8 +56,8 @@ public class TestRunner {
 
     private Boolean equals(ScriptObjectMirror test, ScriptObjectMirror other) {
         Boolean equals = false;
-        for (String s : other.keySet()) {
-            if (test.containsKey(s) && other.get(s).equals(test.get(s))) {
+        for (String s : test.keySet()) {
+            if (other.containsKey(s) && other.get(s).equals(test.get(s))) {
                 equals = true;
             }
         }
