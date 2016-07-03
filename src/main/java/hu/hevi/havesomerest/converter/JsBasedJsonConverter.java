@@ -1,5 +1,6 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.converter;
 
+import hu.hevi.havesomerest.config.JsProperties;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;

@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

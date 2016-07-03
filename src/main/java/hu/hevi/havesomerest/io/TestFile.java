@@ -1,5 +1,7 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.io;
 
+import hu.hevi.havesomerest.test.TestDBData;
+import hu.hevi.havesomerest.test.TestDBSchema;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 

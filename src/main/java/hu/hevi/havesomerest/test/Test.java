@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.test;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import lombok.Builder;

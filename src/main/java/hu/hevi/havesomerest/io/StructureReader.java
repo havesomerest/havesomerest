@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.io;
 
 import org.springframework.stereotype.Component;
 
@@ -9,11 +9,11 @@ import java.nio.file.Paths;
 import java.util.*;
 
 @Component
-class StructureReader {
+public class StructureReader {
 
     public static final String TEST_DIR_PATH = "src/test/rest";
 
-    Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> getStructure() throws IOException {
+    public Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> getStructure() throws IOException {
         Path rootPath = Paths.get(TEST_DIR_PATH).toAbsolutePath();
 
         Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> filesInDirectory = new HashMap<>();

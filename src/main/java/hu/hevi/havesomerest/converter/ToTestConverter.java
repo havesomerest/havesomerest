@@ -1,5 +1,8 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.converter;
 
+import hu.hevi.havesomerest.test.Test;
+import hu.hevi.havesomerest.io.TestDirectory;
+import hu.hevi.havesomerest.io.TestFile;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +22,7 @@ public class ToTestConverter {
     @Autowired
     private JsBasedJsonConverter jsonConverter;
 
-    Set<Test> convert(Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> filesByDirectory) {
+    public Set<Test> convert(Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> filesByDirectory) {
 
         List<TestDirectory> testDirectories = new ArrayList<>();
         filesByDirectory.entrySet().forEach((en) -> {

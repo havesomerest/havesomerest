@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.test;
 
 import lombok.*;
 
@@ -14,6 +14,6 @@ public class EndPoint {
 
     private URI path;
     @Singular
-    private List<TestFile> testFiles = new ArrayList<>();
+    private List<Test> tests = new ArrayList<>();
 
 }
