@@ -99,7 +99,7 @@ public class ToTestConverter {
         String asd = f.getFileName();
         String[] split = asd.split("[.]");
         boolean isTestFile = false;
-        if (split.length > 1 && "json".equals(split[1])) {
+        if (split.length == 2 && "json".equals(split[1])) {
             isTestFile = true;
         }
         return isTestFile;
