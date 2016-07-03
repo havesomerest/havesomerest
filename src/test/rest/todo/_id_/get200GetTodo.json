@@ -9,7 +9,11 @@
     },
     "body": {
       "title": "New todo",
-      "body": "Write a todo list"
+      "body": "Write a todo list",
+      "tags": ["tag1", "tag2", "tag3"],
+      "somethingInObject": {
+        "somethingKey": "somethingValue"
+      }
     }
   },
   "response": {

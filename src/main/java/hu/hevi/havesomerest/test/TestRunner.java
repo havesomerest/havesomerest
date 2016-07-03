@@ -55,12 +55,23 @@ public class TestRunner {
     }
 
     private Boolean equals(ScriptObjectMirror test, ScriptObjectMirror other) {
-        Boolean equals = false;
-        for (String s : test.keySet()) {
-            if (other.containsKey(s) && other.get(s).equals(test.get(s))) {
-                equals = true;
+        Boolean equals = true;
+        for (String key : test.keySet()) {
+            if (isScriptObjectMirror(test, key) && isScriptObjectMirror(other, key)) {
+                equals((ScriptObjectMirror) test.get(key), (ScriptObjectMirror) other.get(key));
+            } else if (isScriptObjectMirror(test, key) && !isScriptObjectMirror(other, key)) {
+                equals = false;
+                break;
+            }
+            if (!other.containsKey(key) || !other.get(key).equals(test.get(key))) {
+                equals = false;
+                break;
             }
         }
         return equals;
+    }
+
+    private boolean isScriptObjectMirror(ScriptObjectMirror test, String key) {
+        return test.get(key).getClass().equals(ScriptObjectMirror.class);
     }
 }
