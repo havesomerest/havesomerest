@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import java.nio.file.Path;
 
 @Data
-public class TestCase {
+public class TestFile {
 
     public static final int STATUS_CODE_LENGTH = 3;
     public static final int GET_OR_PUT_LENGTH = 3;

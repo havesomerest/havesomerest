@@ -14,6 +14,6 @@ public class EndPoint {
 
     private URI path;
     @Singular
-    private List<TestCase> testCases = new ArrayList<>();
+    private List<TestFile> testFiles = new ArrayList<>();
 
 }

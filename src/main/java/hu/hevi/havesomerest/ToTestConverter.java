@@ -22,7 +22,6 @@ public class ToTestConverter {
     Set<Test> convert(Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> filesByDirectory) {
 
         List<TestDirectory> testDirectories = new ArrayList<>();
-
         filesByDirectory.entrySet().forEach((en) -> {
             en.getValue().ifPresent(testDirectoryBuilder -> {
                 TestDirectory testDirectory = testDirectoryBuilder.build();
@@ -59,7 +58,7 @@ public class ToTestConverter {
     Map<String, Test> getTests(List<TestDirectory> testDirectories) {
         Map<String, Test> testByFilename = new HashMap<>();
         testDirectories.stream()
-                       .map(TestDirectory::getTestCases)
+                       .map(TestDirectory::getTestFiles)
                        .forEach(testCase -> {
                            testCase.forEach(test -> {
                                try {
@@ -95,7 +94,7 @@ public class ToTestConverter {
         return testBuilder.build();
     }
 
-    private boolean isTestFile(TestCase f) {
+    private boolean isTestFile(TestFile f) {
         String asd = f.getFileName();
         String[] split = asd.split("[.]");
         boolean isTestFile = false;
@@ -105,7 +104,7 @@ public class ToTestConverter {
         return isTestFile;
     }
 
-    private boolean isJson(TestCase f) {
+    private boolean isJson(TestFile f) {
         return f.getFileName().endsWith(JSON_SUFFIX);
     }
 }

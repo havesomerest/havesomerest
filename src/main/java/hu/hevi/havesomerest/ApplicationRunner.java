@@ -43,7 +43,6 @@ class ApplicationRunner {
                 UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/todo/342");
 //                                                                   .queryParam("msisdn", msisdn);
 
-
                 HttpEntity<?> entity = new HttpEntity<>(headers);
 
                 ResponseEntity<String> response = restTemplate.exchange(

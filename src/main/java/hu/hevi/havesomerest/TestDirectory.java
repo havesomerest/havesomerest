@@ -14,6 +14,6 @@ public class TestDirectory {
 
     private Path testFolder;
     @Singular
-    private List<TestCase> testCases = new ArrayList<>();
+    private List<TestFile> testFiles = new ArrayList<>();
 
 }

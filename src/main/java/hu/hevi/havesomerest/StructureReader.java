@@ -28,7 +28,7 @@ class StructureReader {
                                                                                                  .orElse(Optional.of(new TestDirectory().toBuilder()));
 
                      testDirectoryBuilder.get().testFolder(getTestFolderPath(path));
-                     testDirectoryBuilder.get().testCase(new TestCase(path));
+                     testDirectoryBuilder.get().testFile(new TestFile(path));
                      filesInDirectory.put(path.getParent(), testDirectoryBuilder);
                  }
              });
