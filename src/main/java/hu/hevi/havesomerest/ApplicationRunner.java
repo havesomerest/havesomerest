@@ -1,5 +1,6 @@
 package hu.hevi.havesomerest;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -51,8 +52,19 @@ class ApplicationRunner {
                         entity,
                         String.class);
 
-                System.out.println("Assert: " + response.getBody().equals(test.getResponse()));
+                ScriptObjectMirror scriptObjectMirror = jsonConverter.convertToObject(response.getBody());
 
+
+                Boolean equals = false;
+                for (String s : scriptObjectMirror.keySet()) {
+                    if (test.getResponse().containsKey(s) && scriptObjectMirror.get(s).equals(test.getResponse().get(s))) {
+                        equals = true;
+                    }
+                }
+
+
+
+                System.out.println("Assert: " + equals);
 
 
                 System.out.println(MessageFormat.format("{0} -> {1}", test.getStatusCode(), response.getStatusCode().toString()));
