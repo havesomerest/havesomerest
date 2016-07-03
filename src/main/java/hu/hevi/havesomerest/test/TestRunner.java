@@ -2,6 +2,7 @@ package hu.hevi.havesomerest.test;
 
 import hu.hevi.havesomerest.converter.JsBasedJsonConverter;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import java.text.MessageFormat;
 import java.util.Set;
 
 @Component
+@Slf4j
 public class TestRunner {
 
     @Autowired
@@ -37,23 +39,28 @@ public class TestRunner {
                     entity,
                     String.class);
 
-            ScriptObjectMirror scriptObjectMirror = jsonConverter.convertToObject(response.getBody());
+            System.out.println(response.toString());
 
+            ScriptObjectMirror responseObject = jsonConverter.convertToObject(response.getBody());
 
-            Boolean equals = false;
-            for (String s : scriptObjectMirror.keySet()) {
-                if (test.getResponse().containsKey(s) && scriptObjectMirror.get(s).equals(test.getResponse().get(s))) {
-                    equals = true;
-                }
-            }
+            Boolean equals = equals(test.getResponse(), responseObject);
 
 
 
             System.out.println("Assert: " + equals);
 
-
             System.out.println(MessageFormat.format("{0} -> {1}", test.getStatusCode(), response.getStatusCode().toString()));
             System.out.println(MessageFormat.format("{0}", test.getDescription()));
         });
+    }
+
+    private Boolean equals(ScriptObjectMirror test, ScriptObjectMirror other) {
+        Boolean equals = false;
+        for (String s : other.keySet()) {
+            if (test.containsKey(s) && other.get(s).equals(test.get(s))) {
+                equals = true;
+            }
+        }
+        return equals;
     }
 }
