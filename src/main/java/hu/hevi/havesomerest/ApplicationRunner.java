@@ -32,7 +32,7 @@ class ApplicationRunner {
     void run() {
         try {
 
-            Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> filesByDirectory = structureReader.getStructure();
+            Map<Path, Optional<TestDirectory>> filesByDirectory = structureReader.getStructure();
             Set<Test> tests = toTestConverter.convert(filesByDirectory);
             testRunner.runTests(tests);
 

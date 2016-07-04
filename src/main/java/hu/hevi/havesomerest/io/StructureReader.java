@@ -13,7 +13,7 @@ public class StructureReader {
 
     public static final String TEST_DIR_PATH = "src/test/rest";
 
-    public Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> getStructure() throws IOException {
+    public Map<Path, Optional<TestDirectory>> getStructure() throws IOException {
         Path rootPath = Paths.get(TEST_DIR_PATH).toAbsolutePath();
 
         Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> filesInDirectory = new HashMap<>();
@@ -32,7 +32,14 @@ public class StructureReader {
                      filesInDirectory.put(path.getParent(), testDirectoryBuilder);
                  }
              });
-        return filesInDirectory;
+
+        Map<Path, Optional<TestDirectory>> pathOptionalMap = new HashMap<>();
+        filesInDirectory.keySet().forEach(key -> {
+            Optional<TestDirectory> testDirectory = filesInDirectory.get(key).map(TestDirectory.TestDirectoryBuilder::build);
+            pathOptionalMap.put(key, testDirectory);
+        });
+
+        return pathOptionalMap;
     }
 
     private int orderDirFile(Path a, Path b) {

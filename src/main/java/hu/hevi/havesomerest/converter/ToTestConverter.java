@@ -23,15 +23,13 @@ public class ToTestConverter {
     @Autowired
     private JsBasedJsonConverter jsonConverter;
 
-    public Set<Test> convert(Map<Path, Optional<TestDirectory.TestDirectoryBuilder>> filesByDirectory) {
+    public Set<Test> convert(Map<Path, Optional<TestDirectory>> filesByDirectory) {
 
         List<TestDirectory> testDirectories = new ArrayList<>();
         filesByDirectory.entrySet().forEach((en) -> {
-            en.getValue().ifPresent(testDirectoryBuilder -> {
-                TestDirectory testDirectory = testDirectoryBuilder.build();
+            en.getValue().ifPresent(testDirectory -> {
                 testDirectories.add(testDirectory);
             });
-
         });
 
         Map<String, Test> testsByFilename = getTests(testDirectories);
