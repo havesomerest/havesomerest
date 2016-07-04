@@ -1,8 +1,9 @@
 package hu.hevi.havesomerest.converter;
 
-import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.io.TestDirectory;
 import hu.hevi.havesomerest.io.TestFile;
+import hu.hevi.havesomerest.test.JsonValue;
+import hu.hevi.havesomerest.test.Test;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -67,10 +68,11 @@ public class ToTestConverter {
                                try {
                                    String fileContent = new String(Files.readAllBytes(test.getPath()));
                                    if (isJson(test)) {
-                                       ScriptObjectMirror convertedObject = jsonConverter.convertToObject(fileContent);
+                                       JsonValue convertedObject = jsonConverter.convertToObject(fileContent);
 
                                        if (isTestFile(test)) {
                                            Test t = getTest(convertedObject);
+                                           t.setName(test.getFileName());
                                            testByFilename.put(test.getFileName(), t);
                                        }
                                    }
@@ -82,13 +84,13 @@ public class ToTestConverter {
         return testByFilename;
     }
 
-    private Test getTest(ScriptObjectMirror fileContent) {
+    private Test getTest(JsonValue fileContent) {
         Test.TestBuilder testBuilder = Test.builder();
         if (fileContent.containsKey(REQUEST)) {
-            testBuilder.request((ScriptObjectMirror) fileContent.get(REQUEST)).build();
+            testBuilder.request( new JsonValue((ScriptObjectMirror) fileContent.get(REQUEST)));
         }
         if (fileContent.containsKey(RESPONSE)) {
-            testBuilder.response((ScriptObjectMirror) fileContent.get(RESPONSE)).build();
+            testBuilder.response(new JsonValue((ScriptObjectMirror) fileContent.get(RESPONSE)));
         }
         if (fileContent.containsKey("description")) {
 

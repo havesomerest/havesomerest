@@ -1,6 +1,7 @@
 package hu.hevi.havesomerest.converter;
 
 import hu.hevi.havesomerest.config.JsProperties;
+import hu.hevi.havesomerest.test.JsonValue;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -22,7 +23,7 @@ public class JsBasedJsonConverter {
     private ScriptEngineManager engineManager;
     private ScriptEngine engine;
 
-    public ScriptObjectMirror convertToObject(String val){
+    public JsonValue convertToObject(String val){
         ClassPathResource resource = new ClassPathResource(jsProperties.getLocation());
         InputStreamReader reader = null;
         ScriptObjectMirror converted = null;
@@ -40,7 +41,7 @@ public class JsBasedJsonConverter {
             e.printStackTrace();
         }
 
-        return converted;
+        return new JsonValue(converted);
     }
 
     public ScriptObjectMirror convertToJson(String val){

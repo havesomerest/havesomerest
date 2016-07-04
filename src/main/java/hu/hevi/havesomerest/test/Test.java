@@ -1,6 +1,5 @@
 package hu.hevi.havesomerest.test;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +15,6 @@ public class Test {
     private String description;
     private HttpHeaders headers;
     private Map<String, String> requestParams;
-    private ScriptObjectMirror request;
-    private ScriptObjectMirror response;
+    private JsonValue request;
+    private JsonValue response;
 }

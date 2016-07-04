@@ -7,6 +7,7 @@ import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.test.TestRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,6 +26,8 @@ class ApplicationRunner {
     private ToTestConverter toTestConverter;
     @Autowired
     private TestRunner testRunner;
+    @Autowired
+    private Environment environment;
 
     void run() {
         try {
@@ -33,6 +36,7 @@ class ApplicationRunner {
             Set<Test> tests = toTestConverter.convert(filesByDirectory);
             testRunner.runTests(tests);
 
+            System.out.println(environment.containsProperty("asdf") + " : " + environment.getProperty("asdf"));
         } catch (IOException e) {
             e.printStackTrace();
         }
