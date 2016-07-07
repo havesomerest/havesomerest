@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<property name="LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] - ${PID:-????} %5p [%t] --- %c{1}: %m%n"/>
+	<property name="LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] - ${PID:-????} %5p [%t] --- %c: %m%n"/>
+	<property name="TEST_PATTERN" value="%m%n"/>
 	<property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-/tmp/}spring.log}"/>
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	<appender name="TEST_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${TEST_PATTERN}</pattern>
 		</encoder>
 	</appender>
 	<appender name="FILE"
@@ -24,8 +30,11 @@
 	<logger name="org.springframework.integration.file" level="WARN" />
     <logger name="org.springframework" level="WARN" />
     <logger name="hu.hevi.havesomerest.SampleIntegrationApplication" level="WARN" />
+	<logger name="org.springframework.web.client.RestTemplate" level="ERROR" />
+	<logger name="hu.hevi.havesomerest.test.TestLogger" level="INFO" />
+
 	<root level="INFO">
-		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="TEST_CONSOLE" />
 		<appender-ref ref="FILE" />
 	</root>
 </configuration>

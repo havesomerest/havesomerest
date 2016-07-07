@@ -6,6 +6,7 @@ import hu.hevi.havesomerest.test.JsonValue;
 import hu.hevi.havesomerest.test.Test;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
@@ -36,9 +37,12 @@ public class ToTestConverter {
 
         testsByFilename.keySet().forEach(filename -> {
             String statusCode = getStatusCodeFromFilename(filename);
+            HttpMethod httpMethod = getMethodFromFilename(filename);
 
             Test test = testsByFilename.get(filename);
             test.setStatusCode(statusCode);
+            test.setMethod(httpMethod);
+
         });
 
         Set<Test> tests = testsByFilename.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
@@ -57,6 +61,26 @@ public class ToTestConverter {
         return statusCode;
     }
 
+    private HttpMethod getMethodFromFilename(String filename) {
+        HttpMethod httpMethod = HttpMethod.GET;
+        if (filename.toLowerCase().startsWith("get")) {
+            httpMethod = HttpMethod.GET;
+        }
+        if (filename.toLowerCase().startsWith("post")) {
+            httpMethod = HttpMethod.POST;
+        }
+        if (filename.toLowerCase().startsWith("put")) {
+            httpMethod = HttpMethod.PUT;
+        }
+        if (filename.toLowerCase().startsWith("patch")) {
+            httpMethod = HttpMethod.PATCH;
+        }
+        if (filename.toLowerCase().startsWith("delete")) {
+            httpMethod = HttpMethod.DELETE;
+        }
+        return httpMethod;
+    }
+
     Map<String, Test> getTests(List<TestDirectory> testDirectories) {
         Map<String, Test> testByFilename = new HashMap<>();
         testDirectories.stream()
@@ -71,6 +95,20 @@ public class ToTestConverter {
                                        if (isTestFile(test)) {
                                            Test t = getTest(convertedObject);
                                            t.setName(test.getFileName());
+
+                                           String[] splittedPath = test.getPath().toString().split("/");
+                                           List<String> endpoint = getEndpoint(splittedPath);
+                                           t.setEndpointParts(endpoint);
+
+
+                                           String[] splittedByUnderscore = test.getFileName().split("_");
+                                           if (splittedByUnderscore.length > 2) {
+                                               t.getPathVariablesByName().put(endpoint.get(endpoint.size() - 1), splittedByUnderscore[1]);
+                                           }
+
+
+
+
                                            testByFilename.put(test.getFileName(), t);
                                        }
                                    }
@@ -94,7 +132,7 @@ public class ToTestConverter {
 
             testBuilder.description(((String) fileContent.get("description").toString())).build();
         }
-        return testBuilder.build();
+        return testBuilder.pathVariablesByName(new HashMap<>()).build();
     }
 
     private boolean isTestFile(TestFile f) {
@@ -109,6 +147,24 @@ public class ToTestConverter {
 
     private boolean isJson(TestFile f) {
         return f.getFileName().endsWith(JSON_SUFFIX);
+    }
+
+    private List<String> getEndpoint(String[] splittedPath) {
+        List<String> endPointParts = new LinkedList<>();
+        boolean found = false;
+        for (int i = 0; i < splittedPath.length; i++) {
+            if (!found && "test".equals(splittedPath[i]) && "rest".equals(splittedPath[i + 1])) {
+                found = true;
+                i = i + 1;
+            } else if (found && i < splittedPath.length - 1) {
+                endPointParts.add(splittedPath[i]);
+            }
+        }
+        //Collections.reverse(endPointParts);
+
+        String joinedEndpointParts = endPointParts.stream()
+                                      .collect(Collectors.joining("/"));
+        return endPointParts;
     }
 }
 

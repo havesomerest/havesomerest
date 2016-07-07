@@ -36,7 +36,7 @@ class ApplicationRunner {
             Set<Test> tests = toTestConverter.convert(filesByDirectory);
             testRunner.runTests(tests);
 
-            log.info(environment.containsProperty("asdf") + " : " + environment.getProperty("asdf"));
+            log.debug(environment.containsProperty("asdf") + " : " + environment.getProperty("asdf"));
         } catch (IOException e) {
             e.printStackTrace();
         }
