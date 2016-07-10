@@ -38,8 +38,7 @@ public class TestRunner {
 
                      RestTemplate restTemplate = new RestTemplate();
 
-                     HttpHeaders headers = new HttpHeaders();
-                     headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+                     HttpHeaders headers = test.getRequestHeaders();
 
                      HttpEntity<?> entity = new HttpEntity<>(headers);
 
