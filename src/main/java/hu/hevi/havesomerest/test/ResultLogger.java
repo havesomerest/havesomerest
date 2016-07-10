@@ -9,17 +9,20 @@ import org.springframework.web.client.HttpClientErrorException;
 @Component
 public class ResultLogger {
 
+    public static final String GREEN = (char) 27 + "[32m";
+    public static final String RED = (char) 27 + "[31m";
+
     void logPassed(Test test, String finalEndPoint, ResponseEntity<String> resp) {
-        String info = String.format((char)27 + "[32mPASSED -> %-4s %3s /%-15s - %-35s",
-                                      test.getMethod().toString().toUpperCase(),
-                                      resp.getStatusCode().toString(),
-                                      finalEndPoint,
-                                      test.getName());
+        String info = String.format(GREEN + "PASSED -> %-4s %3s /%-15s - %-35s",
+                                    test.getMethod().toString().toUpperCase(),
+                                    resp.getStatusCode().toString(),
+                                    finalEndPoint,
+                                    test.getName());
         log.info(info);
     }
 
     void logFailed(Test test, String finalEndPoint, HttpClientErrorException e) {
-        String error = String.format((char)27 + "[31mFAILED -> %-4s %3s /%-15s - %-35s -> %s",
+        String error = String.format(RED + "FAILED -> %-4s %3s /%-15s - %-35s -> %s",
                                       test.getMethod().toString().toUpperCase(),
                                       test.getStatusCode(),
                                       finalEndPoint,
