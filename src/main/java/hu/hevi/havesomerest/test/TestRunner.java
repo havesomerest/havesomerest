@@ -71,12 +71,7 @@ public class TestRunner {
                                  entity,
                                  String.class));
                      } catch (HttpClientErrorException e) {
-                         resultLogger.logFailed(MessageFormat.format("FAILED -> {0} {1} /{2} - {3} -> {4}",
-                                                                     test.getMethod().toString().toUpperCase(),
-                                                                     test.getStatusCode(),
-                                                                     finalEndPoint,
-                                                                     test.getName(),
-                                                                     e.getStatusCode() + " " + e.getStatusText()));
+                         resultLogger.logFailed(test, finalEndPoint, e);
                      }
 
                      response.ifPresent(resp -> {
@@ -115,24 +110,4 @@ public class TestRunner {
         }
         return equals;
     }
-
-//    private Boolean equalsJson(JsonValue expected, JsonValue actual) {
-//        Boolean equalsJson = true;
-//        for (String key : expected.children()) {
-//
-//            if (expected.isJsonValue(key) && actual.isJsonValue(key)) {
-//                log.debug("Recursion!");
-//                equalsJson(new JsonValue((ScriptObjectMirror) expected.get(key)), new JsonValue((ScriptObjectMirror) actual.get(key)));
-//            } else if (expected.isJsonValue(key) && !actual.isJsonValue(key)) {
-//                equalsJson = false;
-//                break;
-//            }
-//            if (!actual.containsKey(key) || !actual.get(key).equalsJson(expected.get(key))) {
-//                equalsJson = false;
-//                break;
-//            }
-//        }
-//        return equalsJson;
-//    }
-
 }
