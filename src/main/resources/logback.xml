@@ -29,10 +29,11 @@
 	</appender>
 	<logger name="org.springframework.integration.file" level="WARN" />
     <logger name="org.springframework" level="WARN" />
-    <logger name="hu.hevi.havesomerest.SampleIntegrationApplication" level="WARN" />
 	<logger name="org.springframework.web.client.RestTemplate" level="ERROR" />
-	<logger name="hu.hevi.havesomerest.test.TestLogger" level="INFO" />
 
+	<logger name="hu.hevi.havesomerest.test.ResultLogger" level="INFO" />
+	<logger name="hu.hevi.havesomerest.SampleIntegrationApplication" level="WARN" />
+	<logger name="hu.hevi.havesomerest.test.TestRunner" level="INFO" />
 	<root level="INFO">
 		<appender-ref ref="TEST_CONSOLE" />
 		<appender-ref ref="FILE" />

@@ -1,10 +1,11 @@
 {
   "request": {
     "headers": {
-
+      "asdf": "asdf"
     },
     "parameters": {
-
+      "language": "hu",
+      "otherParam": "otherValue"
     },
     "body": {
       "title": "New todo",

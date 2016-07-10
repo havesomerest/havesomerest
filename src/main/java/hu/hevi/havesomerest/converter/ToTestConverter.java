@@ -5,7 +5,9 @@ import hu.hevi.havesomerest.io.TestFile;
 import hu.hevi.havesomerest.test.JsonValue;
 import hu.hevi.havesomerest.test.Test;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class ToTestConverter {
 
     private static final String RESPONSE = "response";
@@ -123,7 +126,16 @@ public class ToTestConverter {
     private Test getTest(JsonValue fileContent) {
         Test.TestBuilder testBuilder = Test.builder();
         if (fileContent.containsKey(REQUEST)) {
-            testBuilder.request( new JsonValue((ScriptObjectMirror) fileContent.get(REQUEST)));
+            JsonValue requestWrapper = new JsonValue((ScriptObjectMirror) fileContent.get(REQUEST));
+            JsonValue body = new JsonValue((ScriptObjectMirror) requestWrapper.get("body"));
+
+            HttpHeaders httpHeaders = getHeaders(requestWrapper);
+            testBuilder.requestHeaders(httpHeaders);
+
+            Map<String, String> parameters = getParameters(requestWrapper);
+            testBuilder.requestParams(parameters);
+
+            testBuilder.request(body);
         }
         if (fileContent.containsKey(RESPONSE)) {
             testBuilder.response(new JsonValue((ScriptObjectMirror) fileContent.get(RESPONSE)));
@@ -133,6 +145,28 @@ public class ToTestConverter {
             testBuilder.description(((String) fileContent.get("description").toString())).build();
         }
         return testBuilder.pathVariablesByName(new HashMap<>()).build();
+    }
+
+    private HttpHeaders getHeaders(JsonValue requestWrapper) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        JsonValue rawHeaders = new JsonValue((ScriptObjectMirror) requestWrapper.get("headers"));
+        try {
+            rawHeaders.children().forEach(child -> {
+                httpHeaders.add(child, (String) rawHeaders.get(child));
+            });
+        } catch (NullPointerException e) {
+            log.warn("Test file does not contain headers section");
+        }
+        return httpHeaders;
+    }
+
+    private Map<String, String> getParameters(JsonValue requestWrapper) {
+        Map<String, String> parameters = new HashMap<>();
+        JsonValue rawParameters = new JsonValue((ScriptObjectMirror) requestWrapper.get("parameters"));
+        rawParameters.children().forEach(child -> {
+            parameters.put(child, (String) rawParameters.get(child));
+        });
+        return parameters;
     }
 
     private boolean isTestFile(TestFile f) {
@@ -160,7 +194,6 @@ public class ToTestConverter {
                 endPointParts.add(splittedPath[i]);
             }
         }
-        //Collections.reverse(endPointParts);
 
         String joinedEndpointParts = endPointParts.stream()
                                       .collect(Collectors.joining("/"));

@@ -8,10 +8,14 @@ import java.text.MessageFormat;
 
 @Slf4j
 @Component
-public class TestLogger {
+public class ResultLogger {
 
     void logPassed(Test test, String finalEndPoint, ResponseEntity<String> resp) {
-        log.info(MessageFormat.format("PASSED -> {0} /{1} - {2}", resp.getStatusCode().toString(), finalEndPoint, test.getName()));
+        log.info(MessageFormat.format("PASSED -> {0} {1} /{2} - {3}",
+                                      test.getMethod().toString().toUpperCase(),
+                                      resp.getStatusCode().toString(),
+                                      finalEndPoint,
+                                      test.getName()));
     }
 
     void logFailed(String format) {

@@ -10,6 +10,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.Set;
@@ -25,10 +26,10 @@ public class TestRunner {
     @Autowired
     private JsBasedJsonConverter jsonConverter;
     @Autowired
-    private TestLogger testLogger;
+    private ResultLogger resultLogger;
 
     public void runTests(Set<Test> tests) {
-        tests.stream().sorted((a, b) -> a.getName().compareTo(b.getName()))
+        tests.stream().sorted((a, b) -> b.getName().compareTo(a.getName()))
              .forEach(test -> {
                  try {
                      log.debug(test.getRequest().entrySet().toString());
@@ -38,28 +39,10 @@ public class TestRunner {
                      HttpHeaders headers = new HttpHeaders();
                      headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-
                      HttpEntity<?> entity = new HttpEntity<>(headers);
 
-                     HttpMethod httpMethod = HttpMethod.GET;
-                     switch (test.getMethod().name().toUpperCase()) {
-                         case "GET":
-                             httpMethod = HttpMethod.GET;
-                             break;
-                         case "POST":
-                             httpMethod = HttpMethod.POST;
-                             break;
-                         case "PUT":
-                             httpMethod = HttpMethod.PUT;
-                             break;
-                         case "PATCH":
-                             httpMethod = HttpMethod.PATCH;
-                             break;
-                         case "DELETE":
-                             httpMethod = HttpMethod.DELETE;
-                             break;
 
-                     }
+                     HttpMethod httpMethod = HttpMethod.valueOf(test.getMethod().name().toUpperCase());
 
                      String endPoint = "";
                      for (String part : test.getEndpointParts()) {
@@ -68,24 +51,31 @@ public class TestRunner {
                          } else {
                              endPoint = endPoint + part;
                          }
-                     };
+                     }
 
                      String httpUrl = TEST_SERVER_HOST + endPoint;
-                     UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(httpUrl);
-//                                                                   .queryParam("msisdn", msisdn);
+                     UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(httpUrl);
+                     test.getRequestParams().keySet().forEach(key -> {
+                        uriComponentsBuilder.queryParam(key, test.getRequestParams().get(key));
+                     });
+
+                     URI uri = uriComponentsBuilder.build().encode().toUri();
 
                      Optional<ResponseEntity<String>> response = Optional.empty();
-
                      String finalEndPoint = endPoint;
                      try {
                          response = Optional.ofNullable(restTemplate.exchange(
-                                 builder.build().encode().toUri(),
+                                 uri,
                                  httpMethod,
                                  entity,
                                  String.class));
                      } catch (HttpClientErrorException e) {
-                         testLogger.logFailed(MessageFormat.format("FAILED -> {0} /{1} - {2} -> {3}", test.getStatusCode(), finalEndPoint, test.getName(),
-                                                        e.getStatusCode() + " " + e.getStatusText()));
+                         resultLogger.logFailed(MessageFormat.format("FAILED -> {0} {1} /{2} - {3} -> {4}",
+                                                                     test.getMethod().toString().toUpperCase(),
+                                                                     test.getStatusCode(),
+                                                                     finalEndPoint,
+                                                                     test.getName(),
+                                                                     e.getStatusCode() + " " + e.getStatusText()));
                      }
 
                      response.ifPresent(resp -> {
@@ -95,7 +85,7 @@ public class TestRunner {
                          JsonValue responseObject = jsonConverter.convertToObject(resp.getBody());
                          assertTrue(equalsJson(test.getResponse(), responseObject));
 
-                         testLogger.logPassed(test, finalEndPoint, resp);
+                         resultLogger.logPassed(test, finalEndPoint, resp);
                          log.debug(MessageFormat.format("{0}", test.getDescription()));
                      });
 

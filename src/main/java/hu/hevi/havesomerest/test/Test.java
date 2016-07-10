@@ -18,7 +18,7 @@ public class Test {
     private Map<String, String> pathVariablesByName;
     private HttpMethod method;
     private String description;
-    private HttpHeaders headers;
+    private HttpHeaders requestHeaders;
     private Map<String, String> requestParams;
     private JsonValue request;
     private JsonValue response;
