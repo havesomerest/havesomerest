@@ -1,11 +1,13 @@
 package hu.hevi.havesomerest.test;
 
 import hu.hevi.havesomerest.config.TestProperties;
-import hu.hevi.havesomerest.converter.JsBasedJsonConverter;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -24,9 +26,6 @@ public class TestRunner {
 
     @Autowired
     private TestProperties testProperties;
-
-    @Autowired
-    private JsBasedJsonConverter jsonConverter;
     @Autowired
     private ResultLogger resultLogger;
 
@@ -34,14 +33,13 @@ public class TestRunner {
         tests.stream().sorted((a, b) -> b.getName().compareTo(a.getName()))
              .forEach(test -> {
                  try {
-                     log.debug(test.getRequest().entrySet().toString());
-
                      RestTemplate restTemplate = new RestTemplate();
 
                      HttpHeaders headers = test.getRequestHeaders();
 
-                     HttpEntity<?> entity = new HttpEntity<>(headers);
+                     String requestBody = test.getRequest().toString();
 
+                     HttpEntity<?> entity = new HttpEntity<>(requestBody, headers);
 
                      HttpMethod httpMethod = HttpMethod.valueOf(test.getMethod().name().toUpperCase());
 
@@ -76,38 +74,22 @@ public class TestRunner {
 
                      response.ifPresent(resp -> {
                          log.debug(resp.getStatusCode().toString() + " -> " + resp.toString());
-                         assertTrue(resp.getStatusCode().toString().equals(test.getStatusCode()));
+                         assertTrue("Test status not equals", resp.getStatusCode().toString().equals(test.getStatusCode()));
 
-                         JsonValue responseObject = jsonConverter.convertToObject(resp.getBody());
-                         assertTrue(equalsJson(test.getResponse(), responseObject));
+                         JSONObject responseObject = new JSONObject(resp.getBody());
+                         assertTrue("Test body not equals", test.getResponse().similar(responseObject));
 
                          resultLogger.logPassed(test, finalEndPoint, resp);
                          log.debug(MessageFormat.format("{0}", test.getDescription()));
                      });
 
                  } catch (AssertionError e) {
-                     log.error("FAILED - " + test.getName());
+                     resultLogger.logFailed(test, "", e.getMessage());
                  } catch (HttpClientErrorException e) {
                      log.error(e.getMessage());
                  }
              });
     }
 
-    private Boolean equalsJson(JsonValue expected, JsonValue actual) {
-        Boolean equals = true;
-        for (String child : expected.children()) {
-            if (expected.isJsonValue(child)) {
-                return equalsJson(new JsonValue((ScriptObjectMirror) expected.get(child)), new JsonValue((ScriptObjectMirror) actual.get(child)));
-            }
-            if (!expected.isJsonValue(child) && !expected.get(child).equals(actual.get(child))) {
-                log.debug("FALSE");
-                return false;
-            }
-            log.debug(MessageFormat.format("{0} -> {1} : {2} -> {3}, equalsJson: {4}",
-                                           child, expected.get(child), actual.get(child),
-                                           expected.isJsonValue(child) ? "jsonValue" : "String",
-                                           expected.get(child).equals(actual.get(child))));
-        }
-        return equals;
-    }
+
 }

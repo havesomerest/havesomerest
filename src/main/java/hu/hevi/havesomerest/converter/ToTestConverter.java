@@ -2,11 +2,9 @@ package hu.hevi.havesomerest.converter;
 
 import hu.hevi.havesomerest.io.TestDirectory;
 import hu.hevi.havesomerest.io.TestFile;
-import hu.hevi.havesomerest.test.JsonValue;
 import hu.hevi.havesomerest.test.Test;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -23,9 +21,6 @@ public class ToTestConverter {
     private static final String RESPONSE = "response";
     private static final String REQUEST = "request";
     private static final String JSON_SUFFIX = ".json";
-
-    @Autowired
-    private JsBasedJsonConverter jsonConverter;
 
     public Set<Test> convert(Map<Path, Optional<TestDirectory>> filesByDirectory) {
 
@@ -93,7 +88,7 @@ public class ToTestConverter {
                                try {
                                    String fileContent = new String(Files.readAllBytes(test.getPath()));
                                    if (isJson(test)) {
-                                       JsonValue convertedObject = jsonConverter.convertToObject(fileContent);
+                                       JSONObject convertedObject = new JSONObject(fileContent);
 
                                        if (isTestFile(test)) {
                                            Test t = getTest(convertedObject);
@@ -123,11 +118,11 @@ public class ToTestConverter {
         return testByFilename;
     }
 
-    private Test getTest(JsonValue fileContent) {
+    private Test getTest(JSONObject jsonObject) {
         Test.TestBuilder testBuilder = Test.builder();
-        if (fileContent.containsKey(REQUEST)) {
-            JsonValue requestWrapper = new JsonValue((ScriptObjectMirror) fileContent.get(REQUEST));
-            JsonValue body = new JsonValue((ScriptObjectMirror) requestWrapper.get("body"));
+        if (jsonObject.has(REQUEST)) {
+            JSONObject requestWrapper = (JSONObject) jsonObject.get(REQUEST);
+            JSONObject body = (JSONObject) requestWrapper.get("body");
 
             HttpHeaders httpHeaders = getHeaders(requestWrapper);
             testBuilder.requestHeaders(httpHeaders);
@@ -137,22 +132,22 @@ public class ToTestConverter {
 
             testBuilder.request(body);
         }
-        if (fileContent.containsKey(RESPONSE)) {
-            testBuilder.response(new JsonValue((ScriptObjectMirror) fileContent.get(RESPONSE)));
+        if (jsonObject.has(RESPONSE)) {
+            testBuilder.response((JSONObject) jsonObject.get(RESPONSE));
         }
-        if (fileContent.containsKey("description")) {
+        if (jsonObject.has("description")) {
 
-            testBuilder.description(((String) fileContent.get("description").toString())).build();
+            testBuilder.description(((String) jsonObject.get("description").toString())).build();
         }
         return testBuilder.pathVariablesByName(new HashMap<>()).build();
     }
 
-    private HttpHeaders getHeaders(JsonValue requestWrapper) {
+    private HttpHeaders getHeaders(JSONObject requestWrapper) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        JsonValue rawHeaders = new JsonValue((ScriptObjectMirror) requestWrapper.get("headers"));
+        JSONObject rawHeaders = (JSONObject) requestWrapper.get("headers");
         try {
-            rawHeaders.children().forEach(child -> {
-                httpHeaders.add(child, (String) rawHeaders.get(child));
+            rawHeaders.keySet().forEach(key -> {
+                httpHeaders.add(key, (String) rawHeaders.get(key));
             });
         } catch (NullPointerException e) {
             log.warn("Test file does not contain headers section");
@@ -160,11 +155,11 @@ public class ToTestConverter {
         return httpHeaders;
     }
 
-    private Map<String, String> getParameters(JsonValue requestWrapper) {
+    private Map<String, String> getParameters(JSONObject requestWrapper) {
         Map<String, String> parameters = new HashMap<>();
-        JsonValue rawParameters = new JsonValue((ScriptObjectMirror) requestWrapper.get("parameters"));
-        rawParameters.children().forEach(child -> {
-            parameters.put(child, (String) rawParameters.get(child));
+        JSONObject rawParameters = (JSONObject) requestWrapper.get("parameters");
+        rawParameters.keySet().forEach(key -> {
+            parameters.put(key, (String) rawParameters.get(key));
         });
         return parameters;
     }

@@ -2,6 +2,7 @@ package hu.hevi.havesomerest.test;
 
 import lombok.Builder;
 import lombok.Data;
+import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
@@ -20,6 +21,6 @@ public class Test {
     private String description;
     private HttpHeaders requestHeaders;
     private Map<String, String> requestParams;
-    private JsonValue request;
-    private JsonValue response;
+    private JSONObject request;
+    private JSONObject response;
 }

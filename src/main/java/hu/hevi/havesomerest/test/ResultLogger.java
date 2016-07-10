@@ -11,9 +11,10 @@ public class ResultLogger {
 
     public static final String GREEN = (char) 27 + "[32m";
     public static final String RED = (char) 27 + "[31m";
+    public static final String CLEAR = (char) 27 + "[0m";
 
     void logPassed(Test test, String finalEndPoint, ResponseEntity<String> resp) {
-        String info = String.format(GREEN + "PASSED -> %-4s %3s /%-15s - %-35s",
+        String info = String.format(GREEN + "PASSED -> %-4s %3s /%-15s - %-35s" + CLEAR,
                                     test.getMethod().toString().toUpperCase(),
                                     resp.getStatusCode().toString(),
                                     finalEndPoint,
@@ -22,12 +23,22 @@ public class ResultLogger {
     }
 
     void logFailed(Test test, String finalEndPoint, HttpClientErrorException e) {
-        String error = String.format(RED + "FAILED -> %-4s %3s /%-15s - %-35s -> %s",
-                                      test.getMethod().toString().toUpperCase(),
-                                      test.getStatusCode(),
-                                      finalEndPoint,
-                                      test.getName(),
-                                      e.getStatusCode() + " " + e.getStatusText());
+        String error = String.format(RED + "FAILED -> %-4s %3s /%-15s - %-35s -> %s" + CLEAR,
+                                     test.getMethod().toString().toUpperCase(),
+                                     test.getStatusCode(),
+                                     finalEndPoint,
+                                     test.getName(),
+                                     e.getStatusCode() + " " + e.getStatusText());
+        log.error(error);
+    }
+
+    void logFailed(Test test, String finalEndPoint, String message) {
+        String error = String.format(RED + "FAILED -> %-4s %3s /%-15s - %-35s -> %s" + CLEAR,
+                                     test.getMethod().toString().toUpperCase(),
+                                     test.getStatusCode(),
+                                     finalEndPoint,
+                                     test.getName(),
+                                     message);
         log.error(error);
     }
 }
