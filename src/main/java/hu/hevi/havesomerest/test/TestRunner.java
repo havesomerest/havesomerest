@@ -1,5 +1,6 @@
 package hu.hevi.havesomerest.test;
 
+import hu.hevi.havesomerest.config.TestProperties;
 import hu.hevi.havesomerest.converter.JsBasedJsonConverter;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,8 @@ import static org.junit.Assert.assertTrue;
 @Slf4j
 public class TestRunner {
 
-    public static final String TEST_SERVER_HOST = "http://localhost:8080/";
+    @Autowired
+    private TestProperties testProperties;
 
     @Autowired
     private JsBasedJsonConverter jsonConverter;
@@ -53,7 +55,7 @@ public class TestRunner {
                          }
                      }
 
-                     String httpUrl = TEST_SERVER_HOST + endPoint;
+                     String httpUrl = testProperties.getTestServerHost() + endPoint;
                      UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(httpUrl);
                      test.getRequestParams().keySet().forEach(key -> {
                         uriComponentsBuilder.queryParam(key, test.getRequestParams().get(key));
