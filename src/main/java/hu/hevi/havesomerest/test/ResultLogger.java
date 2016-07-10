@@ -10,7 +10,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public class ResultLogger {
 
     void logPassed(Test test, String finalEndPoint, ResponseEntity<String> resp) {
-        String info = String.format((char)27 + "[32RmPASSED -> %-4s %3s /%-15s - %-35s",
+        String info = String.format((char)27 + "[32mPASSED -> %-4s %3s /%-15s - %-35s",
                                       test.getMethod().toString().toUpperCase(),
                                       resp.getStatusCode().toString(),
                                       finalEndPoint,
