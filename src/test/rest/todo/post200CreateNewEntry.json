@@ -13,7 +13,10 @@
     }
   },
   "response": {
-    "id": "GENERATED_ID"
+    "headers": {},
+    "body": {
+      "id": "GENERATED_ID"
+    }
   },
   "options": {
     "request": {

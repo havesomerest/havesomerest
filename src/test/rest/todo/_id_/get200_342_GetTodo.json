@@ -12,24 +12,25 @@
       "body": "Write a todo list"
     }
   },
+
+
+
   "response": {
-    "id": "342",
-    "todo": "create a todo list",
-    "tags": ["tag1", "tag2", "tag3"],
-    "somethingInObject": {
-      "somethingKey": "somethingValue"
-    }
-  },
-
-
-
-  "description": "This is the description because I can't think any better at the moment",
-  "options": {
-    "request": {
-
+    "headers": {},
+    "body": {
+      "id": "342",
+      "todo": "create a todo list",
+      "tags": ["tag1", "tag2", "tag3"],
+      "somethingInObject": {
+        "somethingKey": "somethingValue"
+      }
     },
-    "response": {
-
+    "description": "This is the description because I can't think any better at the moment",
+    "options": {
+      "request": {
+      },
+      "response": {
+      }
     }
   }
 }
