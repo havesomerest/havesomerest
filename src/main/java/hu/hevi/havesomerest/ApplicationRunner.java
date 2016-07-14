@@ -61,8 +61,8 @@ class ApplicationRunner {
 
                 JSONObject logEntry = new JSONObject();
                 logEntry.put("resultType", testResult.getResultType());
-                logEntry.put("request", testFileEntry);
-                logEntry.put("response", responseEntry);
+                logEntry.put("request", testFile);
+                logEntry.put("actualResponse", responseEntry);
 
                 logEntries.put(logEntry);
             });
