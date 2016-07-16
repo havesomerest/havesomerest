@@ -44,55 +44,60 @@ class ApplicationRunner {
             Map<Path, Optional<TestDirectory>> filesByDirectory = structureReader.getStructure();
             Map<Test, JSONObject> tests = toTestConverter.convert(filesByDirectory);
             Map<Test, TestResult> results = testRunner.runTests(tests.keySet());
+            logInFile(tests, results);
 
-            JSONArray logEntries = new JSONArray();
-            results.keySet().forEach(key -> {
-                Test test = key;
-                TestResult testResult = results.get(key);
 
-                JSONObject testFileEntry = new JSONObject();
-                JSONObject testFile = tests.get(test);
-                testFileEntry.put("testCase", testFile);
-
-                JSONObject responseEntry = new JSONObject();
-                responseEntry.put("body", testResult.getResponseBody());
-                responseEntry.put("headers", testResult.getResponseHeaders());
-                responseEntry.put("statusCode", testResult.getStatusCode().toString());
-
-                JSONObject logEntry = new JSONObject();
-                logEntry.put("resultType", testResult.getResultType());
-                logEntry.put("request", testFile);
-                logEntry.put("actualResponse", responseEntry);
-
-                logEntries.put(logEntry);
-            });
-
-            Optional<Path> resultFile = Optional.empty();
-
-            if (!Paths.get(RESULT_FILE_PATH_NAME).toFile().exists()) {
-                Files.createDirectories(Paths.get(RESULT_FILE_PATH_NAME).getParent());
-                resultFile = Optional.of(Files.createFile(Paths.get(RESULT_FILE_PATH_NAME)));
-            } else {
-                resultFile = Optional.of(Paths.get(RESULT_FILE_PATH_NAME));
-            }
-            Optional<Path> finalResultFile = resultFile;
-            resultFile.ifPresent(result -> {
-                try {
-                    try (BufferedWriter writer = Files.newBufferedWriter(finalResultFile.get())) {
-                        writer.write(logEntries.toString(2));
-                    }
-                } catch (IOException e) {
-                    log.warn("Couldn't open result report file.");
-                }
-
-                log.info("logging results in file");
-            });
 
 
             log.debug(environment.containsProperty("asdf") + " : " + environment.getProperty("asdf"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void logInFile(Map<Test, JSONObject> tests, Map<Test, TestResult> results) throws IOException {
+        JSONArray logEntries = new JSONArray();
+        results.keySet().forEach(key -> {
+            Test test = key;
+            TestResult testResult = results.get(key);
+
+            JSONObject testFileEntry = new JSONObject();
+            JSONObject testFile = tests.get(test);
+            testFileEntry.put("testCase", testFile);
+
+            JSONObject responseEntry = new JSONObject();
+            responseEntry.put("body", testResult.getResponseBody());
+            responseEntry.put("headers", testResult.getResponseHeaders());
+            responseEntry.put("statusCode", testResult.getStatusCode().toString());
+
+            JSONObject logEntry = new JSONObject();
+            logEntry.put("resultType", testResult.getResultType());
+            logEntry.put("testCase", testFile);
+            logEntry.put("actualResponse", responseEntry);
+
+            logEntries.put(logEntry);
+        });
+
+        Optional<Path> resultFile = Optional.empty();
+
+        if (!Paths.get(RESULT_FILE_PATH_NAME).toFile().exists()) {
+            Files.createDirectories(Paths.get(RESULT_FILE_PATH_NAME).getParent());
+            resultFile = Optional.of(Files.createFile(Paths.get(RESULT_FILE_PATH_NAME)));
+        } else {
+            resultFile = Optional.of(Paths.get(RESULT_FILE_PATH_NAME));
+        }
+        Optional<Path> finalResultFile = resultFile;
+        resultFile.ifPresent(result -> {
+            try {
+                try (BufferedWriter writer = Files.newBufferedWriter(finalResultFile.get())) {
+                    writer.write(logEntries.toString(2));
+                }
+            } catch (IOException e) {
+                log.warn("Couldn't open result report file.");
+            }
+
+            log.info("logging results in file");
+        });
     }
 
 
