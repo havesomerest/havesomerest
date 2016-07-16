@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
+import java.util.Optional;
+
 @Data
 @Builder
 public class TestResult {
@@ -14,4 +16,12 @@ public class TestResult {
     private HttpHeaders responseHeaders;
     private JSONObject responseBody;
     private ResultType resultType;
+
+    public Optional<HttpStatus> getStatusCode() {
+        return Optional.ofNullable(statusCode);
+    }
+
+    public String getStatusCodeString() {
+        return statusCode != null ? statusCode.toString() : "";
+    }
 }

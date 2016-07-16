@@ -46,9 +46,6 @@ class ApplicationRunner {
             Map<Test, TestResult> results = testRunner.runTests(tests.keySet());
             logInFile(tests, results);
 
-
-
-
             log.debug(environment.containsProperty("asdf") + " : " + environment.getProperty("asdf"));
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,15 +62,16 @@ class ApplicationRunner {
             JSONObject testFile = tests.get(test);
             testFileEntry.put("testCase", testFile);
 
-            JSONObject responseEntry = new JSONObject();
-            responseEntry.put("body", testResult.getResponseBody());
-            responseEntry.put("headers", testResult.getResponseHeaders());
-            responseEntry.put("statusCode", testResult.getStatusCode().toString());
+            JSONObject actualResponse = new JSONObject();
+            actualResponse.put("body", testResult.getResponseBody());
+            actualResponse.put("headers", testResult.getResponseHeaders());
+
+            actualResponse.put("statusCode", testResult.getStatusCodeString());
 
             JSONObject logEntry = new JSONObject();
             logEntry.put("resultType", testResult.getResultType());
             logEntry.put("testCase", testFile);
-            logEntry.put("actualResponse", responseEntry);
+            logEntry.put("actualResponse", actualResponse);
 
             logEntries.put(logEntry);
         });
@@ -86,6 +84,7 @@ class ApplicationRunner {
         } else {
             resultFile = Optional.of(Paths.get(RESULT_FILE_PATH_NAME));
         }
+
         Optional<Path> finalResultFile = resultFile;
         resultFile.ifPresent(result -> {
             try {

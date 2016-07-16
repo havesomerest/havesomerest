@@ -42,22 +42,24 @@ public class TestRunner {
 
                      response = getResponse(endPoint, test);
 
-                     response.ifPresent(resp -> {
-                         log.debug(resp.getStatusCode().toString() + " -> " + resp.toString());
+                     response.ifPresent(actualResponse -> {
+                         log.debug(actualResponse.getStatusCode().toString() + " -> " + actualResponse.toString());
                          String message = MessageFormat.format("Status -> expected: {0}, actual: {1}",
-                                                               resp.getStatusCode().toString(),
+                                                               actualResponse.getStatusCode().toString(),
                                                                test.getStatusCode());
 
-                         JSONObject responseObject = new JSONObject(resp.getBody());
+                         JSONObject responseObject = new JSONObject(actualResponse.getBody());
 
-                         testResultBuilder.statusCode(resp.getStatusCode())
+                         testResultBuilder.statusCode(actualResponse.getStatusCode())
                                           .responseBody(responseObject)
-                                          .responseHeaders(resp.getHeaders());
+                                          .responseHeaders(actualResponse.getHeaders());
 
-                         assertTrue(message, resp.getStatusCode().toString().equals(test.getStatusCode()));
+                         assertTrue(message, actualResponse.getStatusCode().toString().equals(test.getStatusCode()));
                          assertTrue("Test body not equals", test.getResponse().similar(responseObject));
 
-                         resultLogger.logPassed(test, endPoint, resp);
+                         assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
+
+                         resultLogger.logPassed(test, endPoint, actualResponse);
                          log.debug(MessageFormat.format("{0}", test.getDescription()));
                      });
 

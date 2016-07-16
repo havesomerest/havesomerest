@@ -1,0 +1,33 @@
+{
+  "request": {
+    "headers": {
+      "asdf": "asdf"
+    },
+    "parameters": {
+      "language": "hu",
+      "otherParam": "otherValue"
+    },
+    "body": {
+      "title": "New todo",
+      "body": "Write a todo list"
+    }
+  },
+  "response": {
+    "headers": {"wqre":"xczvzx"},
+    "body": {
+      "id": "342",
+      "todo": "create a todo list",
+      "tags": ["tag1", "tag2", "tag3"],
+      "somethingInObject": {
+        "somethingKey": "somethingValue"
+      }
+    }
+  },
+  "description": "This is the description because I can't think any better at the moment",
+  "options": {
+    "request": {
+    },
+    "response": {
+    }
+  }
+}
