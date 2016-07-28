@@ -13,14 +13,18 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ViewResolver;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
-import java.util.Optional;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -37,6 +41,10 @@ class ApplicationRunner {
     private Environment environment;
     @Autowired
     private EndPointNameBuilder endPointNameBuilder;
+    @Autowired
+    private TemplateEngine templateEngine;
+    @Autowired
+    private ViewResolver viewResolver;
 
     void run() {
         try {
@@ -46,8 +54,39 @@ class ApplicationRunner {
             Map<Test, TestResult> results = testRunner.runTests(tests.keySet());
             logInFile(tests, results);
 
+            List<AsdfFileTemplate> convertedResults = new LinkedList<>();
+            results.keySet().forEach(key -> {
+                AsdfFileTemplate result = new AsdfFileTemplate();
+                result.setRequestJson(key.getRequest()
+                                         .toString(2));
+                result.setActualResponseJson(results.get(key)
+                                                    .getResponseBody()
+                                                    .toString(2));
+                result.setExpectedResponseJson(key.getResponse()
+                                                  .toString(2));
+                convertedResults.add(result);
+            });
+
+
+            final Context ctx = new Context(Locale.UK);
+            ctx.setVariable("name", "naaaaaameeeee");
+            ctx.setVariable("results", convertedResults);
+
+            final String htmlContent = this.templateEngine.process("greeting.html", ctx);
+
+            Path path = Paths.get("target/havesomerest/index.html");
+            try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+                writer.write(htmlContent);
+            }
+
+            System.out.println(htmlContent);
+
+            log.info(MessageFormat.format("Finished at: {0}", LocalDateTime.now()));
+
             log.debug(environment.containsProperty("asdf") + " : " + environment.getProperty("asdf"));
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
