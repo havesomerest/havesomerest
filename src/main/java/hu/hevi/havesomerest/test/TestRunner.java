@@ -59,7 +59,7 @@ public class TestRunner {
 
                          assertTrue("Test body not equals", test.getResponse().similar(responseObject));
 
-                         assertTrue("Test selective body not equals", selectiveEquals(test.getResponse(), responseObject));
+                         assertTrue("Test selective body not equals", strictEquals(test.getResponse(), responseObject));
 
                          assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
 
@@ -79,7 +79,7 @@ public class TestRunner {
         return testResults;
     }
 
-    boolean selectiveEquals(JSONObject expected, JSONObject actual) {
+    boolean strictEquals(JSONObject expected, JSONObject actual) {
         final Boolean[] equals = {true};
         expected.keySet().forEach(key -> {
             if (expected.get(key).getClass().equals(JSONArray.class)) {
@@ -88,8 +88,21 @@ public class TestRunner {
                 equals[0] = expectedArray.similar(actualArray);
 
             } else if (expected.get(key).getClass().equals(JSONObject.class)) {
-                equals[0] = selectiveEquals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
+                equals[0] = strictEquals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
             } else if (!actual.has(key) || !expected.get(key).equals(actual.get(key))) {
+                equals[0] = false;
+            }
+        });
+
+        actual.keySet().forEach(key -> {
+            if (actual.get(key).getClass().equals(JSONArray.class)) {
+                JSONArray expectedArray = (JSONArray) expected.get(key);
+                JSONArray actualArray = (JSONArray) actual.get(key);
+                equals[0] = expectedArray.similar(actualArray);
+
+            } else if (actual.get(key).getClass().equals(JSONObject.class)) {
+                equals[0] = strictEquals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
+            } else if (!expected.has(key) || !actual.get(key).equals(expected.get(key))) {
                 equals[0] = false;
             }
         });
