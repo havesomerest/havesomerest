@@ -3,6 +3,7 @@ package hu.hevi.havesomerest.test;
 import hu.hevi.havesomerest.common.EndPointNameBuilder;
 import hu.hevi.havesomerest.config.TestProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -55,7 +56,10 @@ public class TestRunner {
                                           .responseHeaders(actualResponse.getHeaders());
 
                          assertTrue(message, actualResponse.getStatusCode().toString().equals(test.getStatusCode()));
+
                          assertTrue("Test body not equals", test.getResponse().similar(responseObject));
+
+                         assertTrue("Test selective body not equals", selectiveEquals(test.getResponse(), responseObject));
 
                          assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
 
@@ -73,6 +77,23 @@ public class TestRunner {
                  }
              });
         return testResults;
+    }
+
+    boolean selectiveEquals(JSONObject expected, JSONObject actual) {
+        final Boolean[] equals = {true};
+        expected.keySet().forEach(key -> {
+            if (expected.get(key).getClass().equals(JSONArray.class)) {
+                JSONArray expectedArray = (JSONArray) expected.get(key);
+                JSONArray actualArray = (JSONArray) actual.get(key);
+                equals[0] = expectedArray.similar(actualArray);
+
+            } else if (expected.get(key).getClass().equals(JSONObject.class)) {
+                equals[0] = selectiveEquals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
+            } else if (!actual.has(key) || !expected.get(key).equals(actual.get(key))) {
+                equals[0] = false;
+            }
+        });
+        return equals[0];
     }
 
     private Optional<ResponseEntity<String>> getResponse(String endPoint, Test test) {
