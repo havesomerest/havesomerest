@@ -82,31 +82,28 @@ public class TestRunner {
     boolean strictEquals(JSONObject expected, JSONObject actual) {
         final Boolean[] equals = {true};
         expected.keySet().forEach(key -> {
-            if (expected.get(key).getClass().equals(JSONArray.class)) {
-                JSONArray expectedArray = (JSONArray) expected.get(key);
-                JSONArray actualArray = (JSONArray) actual.get(key);
-                equals[0] = expectedArray.similar(actualArray);
-
-            } else if (expected.get(key).getClass().equals(JSONObject.class)) {
-                equals[0] = strictEquals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
-            } else if (!actual.has(key) || !expected.get(key).equals(actual.get(key))) {
-                equals[0] = false;
-            }
+            equals[0] = isEquals(expected, actual, key);
         });
 
         actual.keySet().forEach(key -> {
-            if (actual.get(key).getClass().equals(JSONArray.class)) {
-                JSONArray expectedArray = (JSONArray) expected.get(key);
-                JSONArray actualArray = (JSONArray) actual.get(key);
-                equals[0] = expectedArray.similar(actualArray);
-
-            } else if (actual.get(key).getClass().equals(JSONObject.class)) {
-                equals[0] = strictEquals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
-            } else if (!expected.has(key) || !actual.get(key).equals(expected.get(key))) {
-                equals[0] = false;
-            }
+            equals[0] = isEquals(actual, expected, key);
         });
         return equals[0];
+    }
+
+    private boolean isEquals(JSONObject expected, JSONObject actual, String key) {
+        boolean equals = true;
+        if (expected.get(key).getClass().equals(JSONArray.class)) {
+            JSONArray expectedArray = (JSONArray) expected.get(key);
+            JSONArray actualArray = (JSONArray) actual.get(key);
+            equals = expectedArray.similar(actualArray);
+
+        } else if (expected.get(key).getClass().equals(JSONObject.class)) {
+            equals = strictEquals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
+        } else if (!actual.has(key) || !expected.get(key).equals(actual.get(key))) {
+            equals = false;
+        }
+        return equals;
     }
 
     private Optional<ResponseEntity<String>> getResponse(String endPoint, Test test) {
