@@ -139,11 +139,35 @@ public class TestRunnerTest {
     }
 
     @org.junit.Test
-    public void testExpectedEmptyObejctEqualsActualObjectShouldReturnTrue() {
+    public void testExpectedEmptyObejctEqualsActualObjectShouldReturnFalse() {
         // GIVEN
         // WHEN
         Boolean actual = underTest.strictEquals(new JSONObject("{'key': {}}"),
+                                                new JSONObject("{'key': {'key2' : 'value2'}}"));
+
+        // THEN
+        assertFalse(actual);
+
+    }
+
+    @org.junit.Test
+    public void testExpectedObejctEqualsActualEmptyObjectShouldReturnFalse() {
+        // GIVEN
+        // WHEN
+        Boolean actual = underTest.strictEquals(new JSONObject("{'key': {'key2' : 'value2'}}"),
                                                 new JSONObject("{'key': {}}"));
+
+        // THEN
+        assertFalse(actual);
+
+    }
+
+    @org.junit.Test
+    public void testExpectedObejctEqualsActualObjectShouldReturnTrue() {
+        // GIVEN
+        // WHEN
+        Boolean actual = underTest.strictEquals(new JSONObject("{'key': {'key2' : 'value2'}}"),
+                                                new JSONObject("{'key': {'key2' : 'value2'}}"));
 
         // THEN
         assertTrue(actual);
