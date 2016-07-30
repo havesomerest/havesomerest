@@ -1,12 +1,15 @@
 package hu.hevi.havesomerest.test.equality;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StrictExpressionEqualityChecker {
+
+    @Autowired
+    private ExpressionEvaluator evaluator;
 
     public boolean equals(JSONObject expected, JSONObject actual) {
         final Boolean[] equals = {true};
@@ -29,11 +32,11 @@ public class StrictExpressionEqualityChecker {
             equals = expectedArray.similar(actualArray);
         } else if (isJsonObject(expected, key)) {
             equals = this.equals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
-        } else if (checkForExpression && isElExpresstion((String) expected.get(key))){
-            equals = evaluateIfElExpression((String) expected.get(key), (String) actual.get(key));
+        } else if (checkForExpression && isExpresstion((String) expected.get(key))){
+            equals = evaluator.evaluate((String) expected.get(key), (String) actual.get(key));
         } else if (!hasKey(actual, key) || !isValueEquals(expected, actual, key)) {
-            if (actual.has(key) && isElExpresstion((String) actual.get(key))) {
-                equals = evaluateIfElExpression((String) expected.get(key), (String) actual.get(key));
+            if (actual.has(key) && isExpresstion((String) actual.get(key))) {
+                equals = evaluator.evaluate((String) expected.get(key), (String) actual.get(key));
             } else {
                 equals = false;
             }
@@ -62,26 +65,7 @@ public class StrictExpressionEqualityChecker {
         return false;
     }
 
-
-
-    private boolean isElExpresstion(String string) {
+    private boolean isExpresstion(String string) {
         return string.startsWith("#") && string.endsWith("()");
     }
-
-    private boolean evaluateIfElExpression(String toBeEvaluated, String value) {
-        boolean result = true;
-        switch (toBeEvaluated) {
-            case "#isNumber()":
-                result = NumberUtils.isNumber(value);
-                break;
-            case "#isDigits()":
-                result = NumberUtils.isNumber(value);
-                break;
-            default:
-                result = true;
-                break;
-        }
-        return result;
-    }
-
 }
