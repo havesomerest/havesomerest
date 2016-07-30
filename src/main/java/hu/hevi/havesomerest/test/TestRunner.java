@@ -46,7 +46,7 @@ public class TestRunner {
                  String endPoint = endPointNameBuilder.build(test);
                  try {
 
-                     response = getResponse(endPoint, test);
+                     response = fireRequest(endPoint, test);
 
                      response.ifPresent(actualResponse -> {
                          log.debug(actualResponse.getStatusCode().toString() + " -> " + actualResponse.toString());
@@ -60,12 +60,7 @@ public class TestRunner {
                                           .responseBody(responseObject)
                                           .responseHeaders(actualResponse.getHeaders());
 
-                         assertTrue(message, actualResponse.getStatusCode().toString().equals(test.getStatusCode()));
-                         assertTrue("Test body not equals", test.getResponse().similar(responseObject));
-                         assertTrue("Test selective body not equals", equalityChecker.equals(test.getResponse(), responseObject));
-                         assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
-
-                         resultLogger.logPassed(test, endPoint, actualResponse);
+                         performAssertion(test, endPoint, actualResponse, message, responseObject);
                          log.debug(MessageFormat.format("{0}", test.getDescription()));
                      });
 
@@ -83,15 +78,15 @@ public class TestRunner {
         return testResults;
     }
 
+    private void performAssertion(Test test, String endPoint, ResponseEntity<String> actualResponse, String message, JSONObject responseObject) {
+        assertTrue(message, actualResponse.getStatusCode().toString().equals(test.getStatusCode()));
+        assertTrue("Test body not equals", test.getResponse().similar(responseObject));
+        assertTrue("Test selective body not equals", equalityChecker.equals(test.getResponse(), responseObject));
+        assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
+        resultLogger.logPassed(test, endPoint, actualResponse);
+    }
 
-
-
-
-
-
-
-
-    private Optional<ResponseEntity<String>> getResponse(String endPoint, Test test) {
+    private Optional<ResponseEntity<String>> fireRequest(String endPoint, Test test) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = test.getRequestHeaders();

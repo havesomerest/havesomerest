@@ -15,7 +15,10 @@ public class StrictExpressionEqualityCheckerTest {
 
     @Before
     public void setUp() {
-        underTest = new StrictExpressionEqualityChecker();
+        JsonObjectHelper jsonObjectHelper = new JsonObjectHelper();
+        ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator(jsonObjectHelper);
+
+        underTest = new StrictExpressionEqualityChecker(expressionEvaluator, jsonObjectHelper);
     }
 
     @org.junit.Test
@@ -198,4 +201,14 @@ public class StrictExpressionEqualityCheckerTest {
 
     }
 
+    @org.junit.Test
+    public void testExpectedExpressionIsNumberActualIsArrayShouldReturnFalse() {
+        // GIVEN
+        // WHEN
+        Boolean actual = underTest.equals(new JSONObject("{'key': '#isNumber()'}"),
+                                          new JSONObject("{'key': ['134123']}"));
+
+        // THEN
+        assertFalse(actual);
+    }
 }
