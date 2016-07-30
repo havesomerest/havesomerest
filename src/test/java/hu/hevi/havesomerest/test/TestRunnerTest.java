@@ -11,19 +11,19 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4ClassRunner.class)
 public class TestRunnerTest {
 
-    private TestRunner underTest;
+    private StrictExpressionEqualityChecker underTest;
 
     @Before
     public void setUp() {
-        underTest = new TestRunner();
+        underTest = new StrictExpressionEqualityChecker();
     }
 
     @org.junit.Test
     public void testEmptyEqualsShouldReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{}"),
-                                                new JSONObject("{}"));
+        Boolean actual = underTest.equals(new JSONObject("{}"),
+                                          new JSONObject("{}"));
 
         // THEN
         assertTrue(actual);
@@ -34,8 +34,8 @@ public class TestRunnerTest {
     public void testExpectedEmptyNotEqualsActualNotEmptyShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{}"),
-                                                new JSONObject("{'key': 'value'}"));
+        Boolean actual = underTest.equals(new JSONObject("{}"),
+                                          new JSONObject("{'key': 'value'}"));
 
         // THEN
         assertFalse(actual);
@@ -46,8 +46,8 @@ public class TestRunnerTest {
     public void testExpectedNotEmptyNotEqualsActualEmptyShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': 'value'}"),
-                                                new JSONObject("{}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'value'}"),
+                                          new JSONObject("{}"));
 
         // THEN
         assertFalse(actual);
@@ -58,8 +58,8 @@ public class TestRunnerTest {
     public void testExpectedKeyNotNotEqualsActualKeyShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': 'value'}"),
-                                                new JSONObject("{'card': 'value'}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'value'}"),
+                                          new JSONObject("{'card': 'value'}"));
 
         // THEN
         assertFalse(actual);
@@ -70,8 +70,8 @@ public class TestRunnerTest {
     public void testExpectedStringValueNotEqualsActualValueShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': 'value'}"),
-                                                new JSONObject("{'key': 'price'}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'value'}"),
+                                          new JSONObject("{'key': 'price'}"));
 
         // THEN
         assertFalse(actual);
@@ -82,8 +82,8 @@ public class TestRunnerTest {
     public void testExpectedEmptyArrayEqualsActualEmptyArrayShouldReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': []}"),
-                                                new JSONObject("{'key': []}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': []}"),
+                                          new JSONObject("{'key': []}"));
 
         // THEN
         assertTrue(actual);
@@ -94,8 +94,8 @@ public class TestRunnerTest {
     public void testExpectedEmptyArrayNotEqualsActualArrayShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': []}"),
-                                                new JSONObject("{'key': ['value']}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': []}"),
+                                          new JSONObject("{'key': ['value']}"));
 
         // THEN
         assertFalse(actual);
@@ -106,8 +106,8 @@ public class TestRunnerTest {
     public void testExpectedArrayNotEqualsActualEmptyArrayShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': ['value']}"),
-                                                new JSONObject("{'key': []}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': ['value']}"),
+                                          new JSONObject("{'key': []}"));
 
         // THEN
         assertFalse(actual);
@@ -118,8 +118,8 @@ public class TestRunnerTest {
     public void testExpectedArrayNotEqualsActualArrayShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': ['value']}"),
-                                                new JSONObject("{'key': ['price']}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': ['value']}"),
+                                          new JSONObject("{'key': ['price']}"));
 
         // THEN
         assertFalse(actual);
@@ -130,8 +130,8 @@ public class TestRunnerTest {
     public void testExpectedEmptyObejctEqualsActualEmptyObjectShouldReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': {}}"),
-                                                new JSONObject("{'key': {}}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': {}}"),
+                                          new JSONObject("{'key': {}}"));
 
         // THEN
         assertTrue(actual);
@@ -142,8 +142,8 @@ public class TestRunnerTest {
     public void testExpectedEmptyObejctEqualsActualObjectShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': {}}"),
-                                                new JSONObject("{'key': {'key2' : 'value2'}}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': {}}"),
+                                          new JSONObject("{'key': {'key2' : 'value2'}}"));
 
         // THEN
         assertFalse(actual);
@@ -154,8 +154,8 @@ public class TestRunnerTest {
     public void testExpectedObejctEqualsActualEmptyObjectShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': {'key2' : 'value2'}}"),
-                                                new JSONObject("{'key': {}}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': {'key2' : 'value2'}}"),
+                                          new JSONObject("{'key': {}}"));
 
         // THEN
         assertFalse(actual);
@@ -166,8 +166,8 @@ public class TestRunnerTest {
     public void testExpectedObejctEqualsActualObjectShouldReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': {'key2' : 'value2'}}"),
-                                                new JSONObject("{'key': {'key2' : 'value2'}}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': {'key2' : 'value2'}}"),
+                                          new JSONObject("{'key': {'key2' : 'value2'}}"));
 
         // THEN
         assertTrue(actual);
@@ -178,8 +178,8 @@ public class TestRunnerTest {
     public void testExpectedExpressionIsNumberActualIsShouldReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': '#isNumber()'}"),
-                                                new JSONObject("{'key': '134123'}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': '#isNumber()'}"),
+                                          new JSONObject("{'key': '134123'}"));
 
         // THEN
         assertTrue(actual);
@@ -190,8 +190,8 @@ public class TestRunnerTest {
     public void testExpectedNotExpressionActualIsExpressionShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.strictEquals(new JSONObject("{'key': '134123'}"),
-                                                new JSONObject("{'key': '#isNumber()'}"));
+        Boolean actual = underTest.equals(new JSONObject("{'key': '134123'}"),
+                                          new JSONObject("{'key': '#isNumber()'}"));
 
         // THEN
         assertFalse(actual);
