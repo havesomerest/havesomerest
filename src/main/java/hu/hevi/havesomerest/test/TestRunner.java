@@ -3,6 +3,7 @@ package hu.hevi.havesomerest.test;
 import hu.hevi.havesomerest.common.EndPointNameBuilder;
 import hu.hevi.havesomerest.config.TestProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 
@@ -82,29 +86,77 @@ public class TestRunner {
     boolean strictEquals(JSONObject expected, JSONObject actual) {
         final Boolean[] equals = {true};
         expected.keySet().forEach(key -> {
-            equals[0] = isEquals(expected, actual, key);
+            equals[0] = isEquals(expected, actual, key, true);
         });
 
         actual.keySet().forEach(key -> {
-            equals[0] = isEquals(actual, expected, key);
+            equals[0] = isEquals(actual, expected, key, false);
         });
         return equals[0];
     }
 
-    private boolean isEquals(JSONObject expected, JSONObject actual, String key) {
+    private boolean isInteger(String actual) {
+        Integer.parseInt(actual);
+        return false;
+    }
+
+    private boolean isEquals(JSONObject expected, JSONObject actual, String key, boolean checkForExpression) {
         boolean equals = true;
-        if (expected.get(key).getClass().equals(JSONArray.class)) {
+
+        if (isJsonArray(expected, key)) {
             JSONArray expectedArray = (JSONArray) expected.get(key);
             JSONArray actualArray = (JSONArray) actual.get(key);
             equals = expectedArray.similar(actualArray);
-
-        } else if (expected.get(key).getClass().equals(JSONObject.class)) {
+        } else if (isJsonObject(expected, key)) {
             equals = strictEquals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
-        } else if (!actual.has(key) || !expected.get(key).equals(actual.get(key))) {
-            equals = false;
+        } else if (checkForExpression && isElExpresstion((String) expected.get(key))){
+            equals = evaluateIfElExpression((String) expected.get(key), (String) actual.get(key));
+        } else if (!hasKey(actual, key) || !isValueEquals(expected, actual, key)) {
+            if (actual.has(key) && isElExpresstion((String) actual.get(key))) {
+                equals = evaluateIfElExpression((String) expected.get(key), (String) actual.get(key));
+            } else {
+                equals = false;
+            }
         }
         return equals;
     }
+
+    private boolean isElExpresstion(String string) {
+        return string.startsWith("#") && string.endsWith("()");
+    }
+
+    private boolean evaluateIfElExpression(String toBeEvaluated, String value) {
+        boolean result = true;
+        switch (toBeEvaluated) {
+            case "#isNumber()":
+                result = NumberUtils.isNumber(value);
+                break;
+            case "#isDigits()":
+                result = NumberUtils.isNumber(value);
+                break;
+            default:
+                result = true;
+                break;
+        }
+        return result;
+    }
+
+    private boolean isValueEquals(JSONObject expected, JSONObject actual, String key) {
+        return expected.get(key).equals(actual.get(key));
+    }
+
+    private boolean hasKey(JSONObject actual, String key) {
+        return actual.has(key);
+    }
+
+    private boolean isJsonObject(JSONObject expected, String key) {
+        return expected.get(key).getClass().equals(JSONObject.class);
+    }
+
+    private boolean isJsonArray(JSONObject expected, String key) {
+        return expected.get(key).getClass().equals(JSONArray.class);
+    }
+
 
     private Optional<ResponseEntity<String>> getResponse(String endPoint, Test test) {
         RestTemplate restTemplate = new RestTemplate();

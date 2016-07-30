@@ -173,4 +173,29 @@ public class TestRunnerTest {
         assertTrue(actual);
 
     }
+
+    @org.junit.Test
+    public void testExpectedExpressionIsNumberActualIsShouldReturnTrue() {
+        // GIVEN
+        // WHEN
+        Boolean actual = underTest.strictEquals(new JSONObject("{'key': '#isNumber()'}"),
+                                                new JSONObject("{'key': '134123'}"));
+
+        // THEN
+        assertTrue(actual);
+
+    }
+
+    @org.junit.Test
+    public void testExpectedNotExpressionActualIsExpressionShouldReturnFalse() {
+        // GIVEN
+        // WHEN
+        Boolean actual = underTest.strictEquals(new JSONObject("{'key': '134123'}"),
+                                                new JSONObject("{'key': '#isNumber()'}"));
+
+        // THEN
+        assertFalse(actual);
+
+    }
+
 }
