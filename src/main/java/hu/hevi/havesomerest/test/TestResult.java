@@ -15,7 +15,7 @@ public class TestResult {
     private HttpStatus statusCode;
     private HttpHeaders responseHeaders;
     private JSONObject responseBody;
-    private ResultType resultType;
+    private ResultType resultType = ResultType.PASSED;
 
     public Optional<HttpStatus> getStatusCode() {
         return Optional.ofNullable(statusCode);

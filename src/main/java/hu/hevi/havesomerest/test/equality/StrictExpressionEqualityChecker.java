@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest.test;
+package hu.hevi.havesomerest.test.equality;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONArray;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StrictExpressionEqualityChecker {
 
-    boolean equals(JSONObject expected, JSONObject actual) {
+    public boolean equals(JSONObject expected, JSONObject actual) {
         final Boolean[] equals = {true};
         expected.keySet().forEach(key -> {
             equals[0] = isEquals(expected, actual, key, true);

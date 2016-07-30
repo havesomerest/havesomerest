@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest.test;
+package hu.hevi.havesomerest.test.equality;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -9,7 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4ClassRunner.class)
-public class TestRunnerTest {
+public class StrictExpressionEqualityCheckerTest {
 
     private StrictExpressionEqualityChecker underTest;
 

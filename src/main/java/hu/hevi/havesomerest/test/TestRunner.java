@@ -2,6 +2,7 @@ package hu.hevi.havesomerest.test;
 
 import hu.hevi.havesomerest.common.EndPointNameBuilder;
 import hu.hevi.havesomerest.config.TestProperties;
+import hu.hevi.havesomerest.test.equality.StrictExpressionEqualityChecker;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,8 +70,10 @@ public class TestRunner {
                      });
 
                  } catch (AssertionError e) {
+                     testResultBuilder.resultType(ResultType.FAILED);
                      resultLogger.logFailed(test, "", e.getMessage());
                  } catch (HttpClientErrorException e) {
+                     testResultBuilder.resultType(ResultType.FAILED);
                      resultLogger.logFailed(test, endPoint, e);
                  } finally {
                      TestResult testResult = testResultBuilder.build();
