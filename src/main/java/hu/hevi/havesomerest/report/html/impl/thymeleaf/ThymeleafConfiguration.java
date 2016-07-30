@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.report.html.impl.thymeleaf;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

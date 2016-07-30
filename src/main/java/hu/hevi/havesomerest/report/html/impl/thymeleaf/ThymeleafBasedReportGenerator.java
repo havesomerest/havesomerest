@@ -1,5 +1,6 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.report.html.impl.thymeleaf;
 
+import hu.hevi.havesomerest.report.html.ReportGenerator;
 import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.test.TestResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Map;
 @Component
 public class ThymeleafBasedReportGenerator implements ReportGenerator {
 
+    public static final String INDEX_HTML_PATH = "target/havesomerest/index.html";
     @Autowired
     private TemplateEngine templateEngine;
 
@@ -32,7 +34,7 @@ public class ThymeleafBasedReportGenerator implements ReportGenerator {
 
         final String htmlContent = this.templateEngine.process("testResults.html", ctx);
 
-        Path path = Paths.get("target/havesomerest/index.html");
+        Path path = Paths.get(INDEX_HTML_PATH);
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             writer.write(htmlContent);
         }

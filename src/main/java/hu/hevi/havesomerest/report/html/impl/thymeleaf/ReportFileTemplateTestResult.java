@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.report.html.impl.thymeleaf;
 
 import lombok.Data;
 

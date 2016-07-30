@@ -1,4 +1,4 @@
-package hu.hevi.havesomerest;
+package hu.hevi.havesomerest.report.html;
 
 import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.test.TestResult;
