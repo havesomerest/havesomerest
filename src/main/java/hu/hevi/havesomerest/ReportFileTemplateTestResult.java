@@ -3,7 +3,7 @@ package hu.hevi.havesomerest;
 import lombok.Data;
 
 @Data
-public class AsdfFileTemplate {
+public class ReportFileTemplateTestResult {
 
     private String requestJson;
     private String expectedResponseJson;

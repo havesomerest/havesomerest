@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ViewResolver;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -42,9 +40,9 @@ class ApplicationRunner {
     @Autowired
     private EndPointNameBuilder endPointNameBuilder;
     @Autowired
-    private TemplateEngine templateEngine;
-    @Autowired
     private ViewResolver viewResolver;
+    @Autowired
+    private ReportGenerator reportGenerator;
 
     void run() {
         try {
@@ -53,33 +51,7 @@ class ApplicationRunner {
             Map<Test, JSONObject> tests = toTestConverter.convert(filesByDirectory);
             Map<Test, TestResult> results = testRunner.runTests(tests.keySet());
             logInFile(tests, results);
-
-            List<AsdfFileTemplate> convertedResults = new LinkedList<>();
-            results.keySet().forEach(key -> {
-                AsdfFileTemplate result = new AsdfFileTemplate();
-                result.setRequestJson(key.getRequest()
-                                         .toString(2));
-                result.setActualResponseJson(results.get(key)
-                                                    .getResponseBody()
-                                                    .toString(2));
-                result.setExpectedResponseJson(key.getResponse()
-                                                  .toString(2));
-                convertedResults.add(result);
-            });
-
-
-            final Context ctx = new Context(Locale.UK);
-            ctx.setVariable("name", "naaaaaameeeee");
-            ctx.setVariable("results", convertedResults);
-
-            final String htmlContent = this.templateEngine.process("greeting.html", ctx);
-
-            Path path = Paths.get("target/havesomerest/index.html");
-            try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-                writer.write(htmlContent);
-            }
-
-            System.out.println(htmlContent);
+            reportGenerator.generateReport(results);
 
             log.info(MessageFormat.format("Finished at: {0}", LocalDateTime.now()));
 
@@ -90,6 +62,8 @@ class ApplicationRunner {
             e.printStackTrace();
         }
     }
+
+
 
     private void logInFile(Map<Test, JSONObject> tests, Map<Test, TestResult> results) throws IOException {
         JSONArray logEntries = new JSONArray();
