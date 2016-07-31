@@ -2,6 +2,7 @@ package hu.hevi.havesomerest.test.equality;
 
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,22 +40,24 @@ public class StrictExpressionEqualityChecker {
         boolean equals = true;
 
         try {
-            if (jsonObjectHelper.isJsonArray(expected, key) && jsonObjectHelper.isJsonArray(actual, key)) {
+            if (jsonObjectHelper.isValueJsonArray(expected, actual, key)) {
                 JSONArray expectedArray = (JSONArray) expected.get(key);
                 JSONArray actualArray = (JSONArray) actual.get(key);
                 equals = expectedArray.similar(actualArray);
-            } else if (jsonObjectHelper.isJsonObject(expected, key) && jsonObjectHelper.isJsonObject(actual, key)) {
+            } else if (jsonObjectHelper.isValueJsonObject(expected, actual, key)) {
                 equals = this.equals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
+            } else if (isBothExpression(expected, actual, key)) {
+                equals = true;
             } else if (checkForExpression && isExpression((String) expected.get(key))) {
                 equals = evaluator.evaluate((String) expected.get(key), actual.get(key));
-            } else if (actual.has(key) && isExpression((String) actual.get(key)) && expected.get(key) instanceof String) {
-                    equals = evaluator.evaluate((String) actual.get(key), expected.get(key));
+            } else if (!checkForExpression && isExpression((String) actual.get(key))) {
+                equals = evaluator.evaluate((String) actual.get(key), expected.get(key));
             } else if (!hasKey(actual, key) || !isValueEquals(expected, actual, key)) {
                     equals = false;
-
             }
         } catch (ClassCastException e) {
-            e.printStackTrace();
+            equals = false;
+        } catch (JSONException e) {
             equals = false;
         }
         return equals;
@@ -79,5 +82,19 @@ public class StrictExpressionEqualityChecker {
             string = (String) object;
         }
         return string.startsWith("#") && string.endsWith("()");
+    }
+
+    private boolean isBothExpression(Object object, Object object2, String key) {
+        boolean isExpression = true;
+        try {
+            JSONObject jsonObject = (JSONObject) object;
+            JSONObject jsonObject2 = (JSONObject) object2;
+
+            isExpression = isExpression(jsonObject.get(key)) && isExpression(jsonObject2.get(key));
+        } catch (JSONException e) {
+            isExpression = false;
+        }
+
+        return isExpression;
     }
 }

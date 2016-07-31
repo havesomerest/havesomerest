@@ -37,10 +37,10 @@ public class ExpressionEvaluator {
         boolean result = true;
         switch (toBeEvaluated) {
             case "#isArray()":
-                result = true;
+                result = value instanceof JSONArray;
                 break;
             default:
-                result = true;
+                result = false;
                 break;
         }
         return result;
@@ -50,11 +50,10 @@ public class ExpressionEvaluator {
         boolean result = true;
         switch (toBeEvaluated) {
             case "#isObject()":
-                result = true;
-                System.out.println("HUUURRRAAAAAYYY!!!11");
+                result = value instanceof JSONObject;
                 break;
             default:
-                result = true;
+                result = false;
                 break;
         }
         return result;
@@ -73,7 +72,7 @@ public class ExpressionEvaluator {
                 result = StringUtils.isNotEmpty(value);
                 break;
             default:
-                result = true;
+                result = false;
                 break;
         }
         return result;
