@@ -39,6 +39,9 @@ public class ExpressionEvaluator {
             case "#isArray()":
                 result = value instanceof JSONArray;
                 break;
+            case "#isPresent()":
+                result = value != null;
+                break;
             default:
                 result = false;
                 break;
@@ -51,6 +54,9 @@ public class ExpressionEvaluator {
         switch (toBeEvaluated) {
             case "#isObject()":
                 result = value instanceof JSONObject;
+                break;
+            case "#isPresent()":
+                result = value != null;
                 break;
             default:
                 result = false;
@@ -70,6 +76,9 @@ public class ExpressionEvaluator {
                 break;
             case "#notEmpty()":
                 result = StringUtils.isNotEmpty(value);
+                break;
+            case "#isPresent()":
+                result = value != null;
                 break;
             default:
                 result = false;
