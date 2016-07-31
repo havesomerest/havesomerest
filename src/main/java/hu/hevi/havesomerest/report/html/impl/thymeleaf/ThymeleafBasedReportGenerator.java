@@ -3,6 +3,7 @@ package hu.hevi.havesomerest.report.html.impl.thymeleaf;
 import hu.hevi.havesomerest.report.html.ReportGenerator;
 import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.test.TestResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class ThymeleafBasedReportGenerator implements ReportGenerator {
 
@@ -27,6 +29,8 @@ public class ThymeleafBasedReportGenerator implements ReportGenerator {
 
     @Override
     public void generateReport(Map<Test, TestResult> results) throws IOException {
+        log.info("Generating report HTML...\n");
+
         List<ReportFileTemplateTestResult> convertedResults = getReportFileTemplateTestResults(results);
 
         final Context ctx = new Context(Locale.UK);

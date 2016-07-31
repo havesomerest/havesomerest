@@ -58,6 +58,7 @@ public class FileBasedResultJsonGenerator implements ResultJsonGenerator {
 
         Optional<Path> finalResultFile = resultFile;
         resultFile.ifPresent(result -> {
+            log.info("Generating report JSON...\n");
             try {
                 try (BufferedWriter writer = Files.newBufferedWriter(finalResultFile.get())) {
                     writer.write(logEntries.toString(2));
@@ -66,7 +67,6 @@ public class FileBasedResultJsonGenerator implements ResultJsonGenerator {
                 log.warn("Couldn't open result report file.");
             }
 
-            log.info("logging results in file");
         });
     }
 }

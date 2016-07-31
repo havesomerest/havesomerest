@@ -6,6 +6,7 @@ import hu.hevi.havesomerest.io.StructureReader;
 import hu.hevi.havesomerest.io.TestDirectory;
 import hu.hevi.havesomerest.report.html.ReportGenerator;
 import hu.hevi.havesomerest.report.json.ResultJsonGenerator;
+import hu.hevi.havesomerest.test.ResultType;
 import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.test.TestResult;
 import hu.hevi.havesomerest.test.TestRunner;
@@ -50,10 +51,24 @@ class ApplicationRunner {
 
     void run() {
         try {
-
             Map<Path, Optional<TestDirectory>> filesByDirectory = structureReader.getStructure();
             Map<Test, JSONObject> tests = toTestConverter.convert(filesByDirectory);
             Map<Test, TestResult> results = testRunner.runTests(tests.keySet());
+
+            log.info("---------------\n");
+
+            long passedCount = results.values()
+                                      .stream()
+                                      .filter(p -> p.getResultType().equals(ResultType.PASSED))
+                                      .count();
+
+            log.info(MessageFormat.format("{0} of {1} test PASSED, {2} FAILED\n",
+                                          passedCount,
+                                          results.keySet().size(),
+                                          results.keySet().size() - passedCount));
+
+            log.info("---------------\n");
+
             resultJsonGenerator.generateResult(tests, results);
             reportGenerator.generateReport(results);
 

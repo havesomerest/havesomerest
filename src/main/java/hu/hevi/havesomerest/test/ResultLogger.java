@@ -14,7 +14,7 @@ public class ResultLogger {
     public static final String CLEAR = (char) 27 + "[0m";
 
     void logPassed(Test test, String finalEndPoint, ResponseEntity<String> resp) {
-        String info = String.format(GREEN + "PASSED -> %-4s %3s /%-25s - %-35s" + CLEAR,
+        String info = String.format(GREEN + "PASSED -> %-4s %3s /%-25s - %-35s\n" + CLEAR,
                                     test.getMethod().toString().toUpperCase(),
                                     resp.getStatusCode().toString(),
                                     finalEndPoint,

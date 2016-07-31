@@ -38,8 +38,12 @@ public class TestRunner {
     private StrictExpressionEqualityChecker equalityChecker;
 
     public Map<Test, TestResult> runTests(Collection<Test> tests) {
+
+        log.info("Running " + tests.size() + " test scenarios\n");
+
         Map<Test, TestResult> testResults = new HashMap<>();
-        tests.stream().sorted((a, b) -> b.getName().compareTo(a.getName()))
+        tests.stream()
+             .sorted((a, b) -> b.getName().compareTo(a.getName()))
              .forEach(test -> {
                  TestResult.TestResultBuilder testResultBuilder = TestResult.builder();
                  Optional<ResponseEntity<String>> response = Optional.empty();
@@ -60,6 +64,8 @@ public class TestRunner {
 
                          performAssertion(test, endPoint, actualResponse, responseObject);
                          log.debug(MessageFormat.format("{0}", test.getDescription()));
+
+                         testResultBuilder.resultType(ResultType.PASSED);
                      });
 
                  } catch (AssertionError e) {
@@ -98,6 +104,7 @@ public class TestRunner {
         HttpMethod httpMethod = HttpMethod.valueOf(test.getMethod().name().toUpperCase());
 
         String httpUrl = testProperties.getTestServerHost() + endPoint;
+
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(httpUrl);
         test.getRequestParams().keySet().forEach(key -> {
             String value = test.getRequestParams().get(key);
@@ -108,6 +115,11 @@ public class TestRunner {
 
         Optional<ResponseEntity<String>> response = Optional.empty();
         String finalEndPoint = endPoint;
+
+        log.info(MessageFormat.format("Sending {0} request to: {1}",
+                 httpMethod.toString(),
+                 uri.toString()));
+
         response = Optional.ofNullable(restTemplate.exchange(
                 uri,
                 httpMethod,
