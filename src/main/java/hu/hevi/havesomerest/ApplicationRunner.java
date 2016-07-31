@@ -12,6 +12,8 @@ import hu.hevi.havesomerest.test.TestRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ViewResolver;
@@ -27,6 +29,8 @@ import java.util.Optional;
 @Slf4j
 class ApplicationRunner {
 
+    @Autowired
+    private ApplicationContext ctx;
     @Autowired
     private StructureReader structureReader;
     @Autowired
@@ -60,6 +64,8 @@ class ApplicationRunner {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            ((ConfigurableApplicationContext) ctx).close();
         }
     }
 }
