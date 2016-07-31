@@ -39,23 +39,22 @@ public class StrictExpressionEqualityChecker {
         boolean equals = true;
 
         try {
-            if (jsonObjectHelper.isJsonArray(expected, key)) {
+            if (jsonObjectHelper.isJsonArray(expected, key) && jsonObjectHelper.isJsonArray(actual, key)) {
                 JSONArray expectedArray = (JSONArray) expected.get(key);
                 JSONArray actualArray = (JSONArray) actual.get(key);
                 equals = expectedArray.similar(actualArray);
-            } else if (jsonObjectHelper.isJsonObject(expected, key)) {
+            } else if (jsonObjectHelper.isJsonObject(expected, key) && jsonObjectHelper.isJsonObject(actual, key)) {
                 equals = this.equals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
-            } else if (checkForExpression && isExpresstion((String) expected.get(key))) {
+            } else if (checkForExpression && isExpression((String) expected.get(key))) {
                 equals = evaluator.evaluate((String) expected.get(key), actual.get(key));
+            } else if (actual.has(key) && isExpression((String) actual.get(key)) && expected.get(key) instanceof String) {
+                    equals = evaluator.evaluate((String) actual.get(key), expected.get(key));
             } else if (!hasKey(actual, key) || !isValueEquals(expected, actual, key)) {
-                if (actual.has(key) && isExpresstion((String) actual.get(key))) {
-                    equals = evaluator.evaluate((String) expected.get(key), (String) actual.get(key));
-                } else {
                     equals = false;
-                }
+
             }
         } catch (ClassCastException e) {
-            log.error(e.getMessage());
+            e.printStackTrace();
             equals = false;
         }
         return equals;
@@ -74,7 +73,11 @@ public class StrictExpressionEqualityChecker {
         return false;
     }
 
-    private boolean isExpresstion(String string) {
+    private boolean isExpression(Object object) {
+        String string = "";
+        if (object instanceof String) {
+            string = (String) object;
+        }
         return string.startsWith("#") && string.endsWith("()");
     }
 }

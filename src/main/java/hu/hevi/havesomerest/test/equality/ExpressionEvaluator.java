@@ -36,7 +36,8 @@ public class ExpressionEvaluator {
     private boolean evaluateOnJsonArray(String toBeEvaluated, JSONArray value) {
         boolean result = true;
         switch (toBeEvaluated) {
-            case "#isNumber()":
+            case "#isArray()":
+                result = true;
                 break;
             default:
                 result = true;
@@ -48,7 +49,9 @@ public class ExpressionEvaluator {
     private boolean evaluateOnJsonObject(String toBeEvaluated, JSONObject value) {
         boolean result = true;
         switch (toBeEvaluated) {
-            case "#isNumber()":
+            case "#isObject()":
+                result = true;
+                System.out.println("HUUURRRAAAAAYYY!!!11");
                 break;
             default:
                 result = true;
