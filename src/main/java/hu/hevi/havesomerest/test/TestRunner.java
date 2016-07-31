@@ -50,9 +50,7 @@ public class TestRunner {
 
                      response.ifPresent(actualResponse -> {
                          log.debug(actualResponse.getStatusCode().toString() + " -> " + actualResponse.toString());
-                         String message = MessageFormat.format("Status -> expected: {0}, actual: {1}",
-                                                               actualResponse.getStatusCode().toString(),
-                                                               test.getStatusCode());
+
 
                          JSONObject responseObject = new JSONObject(actualResponse.getBody());
 
@@ -60,7 +58,7 @@ public class TestRunner {
                                           .responseBody(responseObject)
                                           .responseHeaders(actualResponse.getHeaders());
 
-                         performAssertion(test, endPoint, actualResponse, message, responseObject);
+                         performAssertion(test, endPoint, actualResponse, responseObject);
                          log.debug(MessageFormat.format("{0}", test.getDescription()));
                      });
 
@@ -78,7 +76,10 @@ public class TestRunner {
         return testResults;
     }
 
-    private void performAssertion(Test test, String endPoint, ResponseEntity<String> actualResponse, String message, JSONObject responseObject) {
+    private void performAssertion(Test test, String endPoint, ResponseEntity<String> actualResponse, JSONObject responseObject) {
+        String message = MessageFormat.format("Status -> expected: {0}, actual: {1}",
+                                              actualResponse.getStatusCode().toString(),
+                                              test.getStatusCode());
         assertTrue(message, actualResponse.getStatusCode().toString().equals(test.getStatusCode()));
         assertTrue("Test selective body not equals", equalityChecker.equals(test.getResponse(), responseObject));
         assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
