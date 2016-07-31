@@ -80,7 +80,6 @@ public class TestRunner {
 
     private void performAssertion(Test test, String endPoint, ResponseEntity<String> actualResponse, String message, JSONObject responseObject) {
         assertTrue(message, actualResponse.getStatusCode().toString().equals(test.getStatusCode()));
-        assertTrue("Test body not equals", test.getResponse().similar(responseObject));
         assertTrue("Test selective body not equals", equalityChecker.equals(test.getResponse(), responseObject));
         assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
         resultLogger.logPassed(test, endPoint, actualResponse);

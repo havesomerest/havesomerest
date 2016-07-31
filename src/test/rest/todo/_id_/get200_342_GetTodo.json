@@ -15,7 +15,7 @@
   "response": {
     "headers": {},
     "body": {
-      "id": "342",
+      "id": "#isPresent()",
       "todo": "create a todo list",
       "tags": ["tag1", "tag2", "tag3"],
       "somethingInObject": {

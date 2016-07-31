@@ -27,12 +27,15 @@ public class StrictExpressionEqualityChecker {
     public boolean equals(JSONObject expected, JSONObject actual) {
         final Boolean[] equals = {true};
         expected.keySet().forEach(key -> {
-            equals[0] = isEquals(expected, actual, key, true);
+            if (equals[0] != false) {
+                equals[0] = isEquals(expected, actual, key, true);
+            }
         });
-
-        actual.keySet().forEach(key -> {
-            equals[0] = isEquals(actual, expected, key, false);
-        });
+        if (equals[0] != false) {
+            actual.keySet().forEach(key -> {
+                equals[0] = isEquals(actual, expected, key, false);
+            });
+        }
         return equals[0];
     }
 
