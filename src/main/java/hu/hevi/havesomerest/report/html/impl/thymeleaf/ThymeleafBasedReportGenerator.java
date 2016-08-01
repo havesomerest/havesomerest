@@ -4,6 +4,7 @@ import hu.hevi.havesomerest.report.html.ReportGenerator;
 import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.test.TestResult;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
@@ -14,10 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -50,9 +48,12 @@ public class ThymeleafBasedReportGenerator implements ReportGenerator {
             ReportFileTemplateTestResult result = new ReportFileTemplateTestResult();
             result.setRequestJson(key.getRequest()
                                      .toString(2));
-            result.setActualResponseJson(results.get(key)
-                                                .getResponseBody()
-                                                .toString(2));
+
+
+            Optional<JSONObject> actualResponseJson = Optional.ofNullable(results.get(key)
+                                                                                 .getResponseBody());
+            actualResponseJson.ifPresent(r -> result.setActualResponseJson(actualResponseJson.get().toString(2)));
+
             result.setExpectedResponseJson(key.getResponse()
                                               .toString(2));
             convertedResults.add(result);
