@@ -7,8 +7,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.util.StringUtils.isEmpty;
-
 @Slf4j
 @Component
 public class StrictExpressionEqualityChecker {
@@ -27,11 +25,15 @@ public class StrictExpressionEqualityChecker {
     }
 
     public boolean equals(JSONObject expected, JSONObject actual) {
-        if (isEmpty(expected) && isEmpty(actual)) {
+        if (expected == null && actual == null) {
+            System.out.println("BOTH NULL OR EMPTY");
             return true;
-        } else if (isEmpty(expected) && !isEmpty(actual)) {
-            return false;
-        } else if (!isEmpty(expected) && isEmpty(actual)) {
+        } else if (expected == null && actual != null && actual.length() == 0) {
+            System.out.println("actual: " + actual);
+            System.out.println("EXPECTED NULL OR EMPTY");
+            return true;
+        } else if (expected != null && actual == null) {
+            System.out.println("ACTUAL NULL OR EMPTY");
             return false;
         }
 
