@@ -66,10 +66,14 @@ public class TestRunner {
                                           .responseHeaders(actualResponse.getHeaders());
 
                          performAssertion(test, endPoint, actualResponse, responseObject);
+                         resultLogger.logPassed(test, endPoint, actualResponse);
+
                          log.debug(MessageFormat.format("{0}", test.getDescription()));
 
                          testResultBuilder.resultType(ResultType.PASSED);
                      });
+
+                     response.orElseThrow(() -> new AssertionError("actualResponse is not present"));
 
                  } catch (AssertionError e) {
                      testResultBuilder.resultType(ResultType.FAILED);
@@ -77,7 +81,11 @@ public class TestRunner {
                  } catch (HttpClientErrorException e) {
                      testResultBuilder.resultType(ResultType.FAILED);
                      resultLogger.logFailed(test, endPoint, e);
-                 } finally {
+                 } catch (Exception e) {
+                     testResultBuilder.resultType(ResultType.FAILED);
+                     resultLogger.logFailed(test, endPoint, e.getMessage());
+                 }
+                 finally {
                      TestResult testResult = testResultBuilder.build();
                      testResults.put(test, testResult);
                  }
@@ -92,7 +100,6 @@ public class TestRunner {
         assertTrue(message, actualResponse.getStatusCode().toString().equals(test.getStatusCode()));
         assertTrue("Test body not equals", equalityChecker.equals(test.getResponse(), responseObject));
         assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
-        resultLogger.logPassed(test, endPoint, actualResponse);
     }
 
     private Optional<ResponseEntity<String>> fireRequest(String endPoint, Test test) {
