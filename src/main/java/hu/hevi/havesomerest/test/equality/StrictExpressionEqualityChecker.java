@@ -56,10 +56,34 @@ public class StrictExpressionEqualityChecker {
             if (jsonObjectHelper.isValueJsonArray(expected, actual, key)) {
                 JSONArray expectedArray = (JSONArray) expected.get(key);
                 JSONArray actualArray = (JSONArray) actual.get(key);
-                equals = expectedArray.similar(actualArray);
+
+                if (expectedArray.length() == 0 && actualArray.length() == 0) {
+                    return true;
+                }
+
+
+                final boolean[] result = new boolean[1];
+                result[0] = false;
+                expectedArray.forEach(e -> {
+                    actualArray.forEach(a -> {
+                        if (e instanceof String && a instanceof String) {
+                            if (e.equals(a)) {
+                                result[0] = true;
+                            }
+                        } else if (e instanceof JSONObject && a instanceof JSONObject) {
+                            result[0] = this.equals((JSONObject) e, (JSONObject) a);
+                        } else if (e instanceof JSONArray && a instanceof JSONArray) {
+                            result[0] = this.equals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
+                        }
+                    });
+                });
+
+                equals = result[0];
             } else if (jsonObjectHelper.isValueJsonObject(expected, actual, key)) {
                 equals = this.equals((JSONObject) expected.get(key), (JSONObject) actual.get(key));
             } else if (isBothExpression(expected, actual, key)) {
+                equals = true;
+            } else if(isBothEmpty(expected, actual, key)) {
                 equals = true;
             } else if (checkForExpression && isExpression((String) expected.get(key))) {
                 equals = evaluator.evaluate((String) expected.get(key), actual.get(key));
@@ -90,11 +114,8 @@ public class StrictExpressionEqualityChecker {
     }
 
     private boolean isExpression(Object object) {
-        String string = "";
-        if (object instanceof String) {
-            string = (String) object;
-        }
-        return string.startsWith("#") && string.endsWith("()");
+        String string = String.valueOf(object);
+        return string.endsWith("()");
     }
 
     private boolean isBothExpression(Object object, Object object2, String key) {
@@ -109,5 +130,9 @@ public class StrictExpressionEqualityChecker {
         }
 
         return isExpression;
+    }
+
+    private boolean isBothEmpty(Object object, Object object2, String key) {
+        return object == null && object2 == null;
     }
 }

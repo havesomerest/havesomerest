@@ -21,64 +21,25 @@ public class ExpressionEvaluator {
     }
 
     public boolean evaluate(String toBeEvaluated, Object value) {
-        boolean result = false;
-        if (jsonObjectHelper.isJsonObject(value)) {
-            result = evaluateOnJsonObject(toBeEvaluated, (JSONObject) value);
-        } else if (jsonObjectHelper.isJsonArray(value)) {
-            result = evaluateOnJsonArray(toBeEvaluated, (JSONArray) value);
-        } else {
-            result = evaluateString(toBeEvaluated, (String) value);
-        }
-
-        return result;
-    }
-
-    private boolean evaluateOnJsonArray(String toBeEvaluated, JSONArray value) {
         boolean result = true;
         switch (toBeEvaluated) {
-            case "#isArray()":
+            case "isNumber()":
+                result = NumberUtils.isNumber((String) value);
+                break;
+            case "isString()":
+                result = value instanceof String;
+                break;
+            case "notEmpty()":
+                result = StringUtils.isNotEmpty((String) value);
+                break;
+            case "isPresent()":
+                result = value != null;
+                break;
+            case "isArray()":
                 result = value instanceof JSONArray;
                 break;
-            case "#isPresent()":
-                result = value != null;
-                break;
-            default:
-                result = false;
-                break;
-        }
-        return result;
-    }
-
-    private boolean evaluateOnJsonObject(String toBeEvaluated, JSONObject value) {
-        boolean result = true;
-        switch (toBeEvaluated) {
-            case "#isObject()":
+            case "isObject()":
                 result = value instanceof JSONObject;
-                break;
-            case "#isPresent()":
-                result = value != null;
-                break;
-            default:
-                result = false;
-                break;
-        }
-        return result;
-    }
-
-    private boolean evaluateString(String toBeEvaluated, String value) {
-        boolean result = true;
-        switch (toBeEvaluated) {
-            case "#isNumber()":
-                result = NumberUtils.isNumber(value);
-                break;
-            case "#isDigits()":
-                result = NumberUtils.isNumber(value);
-                break;
-            case "#notEmpty()":
-                result = StringUtils.isNotEmpty(value);
-                break;
-            case "#isPresent()":
-                result = value != null;
                 break;
             default:
                 result = false;

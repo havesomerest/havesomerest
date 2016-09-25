@@ -181,7 +181,7 @@ public class StrictExpressionEqualityCheckerTest {
     public void testExpectedExpressionIsNumberActualIsShouldReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isNumber()'}"),
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'isNumber()'}"),
                                           new JSONObject("{'key': '134123'}"));
 
         // THEN
@@ -194,7 +194,7 @@ public class StrictExpressionEqualityCheckerTest {
         // GIVEN
         // WHEN
         Boolean actual = underTest.equals(new JSONObject("{'key': '134123'}"),
-                                          new JSONObject("{'key': '#isNumber()'}"));
+                                          new JSONObject("{'key': 'isNumber()'}"));
 
         // THEN
         assertFalse(actual);
@@ -205,7 +205,7 @@ public class StrictExpressionEqualityCheckerTest {
     public void testExpectedExpressionIsNumberActualIsArrayShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isNumber()'}"),
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'isNumber()'}"),
                                           new JSONObject("{'key': ['134123']}"));
 
         // THEN
@@ -215,9 +215,11 @@ public class StrictExpressionEqualityCheckerTest {
     @org.junit.Test
     public void testExpectedExpressionIsObjectActualIsShouldReturnTrue() {
         // GIVEN
+        JSONObject expectedResponse = new JSONObject("{'key': 'isObject()'}");
+        JSONObject actualResponse = new JSONObject("{'key': {}}");
+
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isObject()'}"),
-                                          new JSONObject("{'key': {}}"));
+        Boolean actual = underTest.equals(expectedResponse, actualResponse);
 
         // THEN
         assertTrue(actual);
@@ -227,7 +229,7 @@ public class StrictExpressionEqualityCheckerTest {
     public void testExpectedExpressionIsObjectActualIsNotShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isObject()'}"),
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'isObject()'}"),
                                           new JSONObject("{'key': []}"));
 
         // THEN
@@ -238,7 +240,7 @@ public class StrictExpressionEqualityCheckerTest {
     public void testExpectedExpressionIsObjectActualIsStringShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isObject()'}"),
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'isObject()'}"),
                                           new JSONObject("{'key': 'value'}"));
 
         // THEN
@@ -249,7 +251,7 @@ public class StrictExpressionEqualityCheckerTest {
     public void testExpectedExpressionIsArrayActualIsShouldReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isArray()'}"),
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'isArray()'}"),
                                           new JSONObject("{'key': []}"));
 
         // THEN
@@ -260,7 +262,7 @@ public class StrictExpressionEqualityCheckerTest {
     public void testExpectedExpressionIsArrayActualIsNotShouldReturnFalse() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isArray()'}"),
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'isArray()'}"),
                                           new JSONObject("{'key': {}}"));
 
         // THEN
@@ -271,7 +273,7 @@ public class StrictExpressionEqualityCheckerTest {
     public void testExpectedExpressionIsPresentActualIsObjectShouldReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isPresent()'}"),
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'isPresent()'}"),
                                           new JSONObject("{'key': {}}"));
 
         // THEN
@@ -282,7 +284,7 @@ public class StrictExpressionEqualityCheckerTest {
     public void testExpectedExpressionIsPresentActualIsArrayShouldReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isPresent()'}"),
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'isPresent()'}"),
                                           new JSONObject("{'key': []}"));
 
         // THEN
@@ -293,8 +295,32 @@ public class StrictExpressionEqualityCheckerTest {
     public void testExpectedExpressionIsPresentActualIsStringReturnTrue() {
         // GIVEN
         // WHEN
-        Boolean actual = underTest.equals(new JSONObject("{'key': '#isPresent()'}"),
+        Boolean actual = underTest.equals(new JSONObject("{'key': 'isPresent()'}"),
                                           new JSONObject("{'key': 'value'}"));
+
+        // THEN
+        assertTrue(actual);
+    }
+
+    @org.junit.Test
+    public void testEx() {
+        // GIVEN
+        JSONObject expectedResponse = new JSONObject("{'kind': 'COMMENT', 'items': [{'id': 'isNumber', 'comment': 'isString'}]}");
+        JSONObject actualResponse = new JSONObject("{'kind': 'COMMENT', 'items': [{'id': 'isNumber', 'comment': 'isString'}]}");
+        // WHEN
+        Boolean actual = underTest.equals(expectedResponse, actualResponse);
+
+        // THEN
+        assertTrue(actual);
+    }
+
+    @org.junit.Test
+    public void testEx2() {
+        // GIVEN
+        JSONObject expectedResponse = new JSONObject("{'items': [{'id': 'isNumber', 'comment': 'isString'}]}");
+        JSONObject actualResponse = new JSONObject("{'items': [{'id': 'isNumber', 'comment': 'isString'}]}");
+        // WHEN
+        Boolean actual = underTest.equals(expectedResponse, actualResponse);
 
         // THEN
         assertTrue(actual);
