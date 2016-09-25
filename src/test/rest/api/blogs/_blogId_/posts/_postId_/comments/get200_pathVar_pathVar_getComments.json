@@ -1,0 +1,24 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {
+      "view": "isString()",
+      "endDate": "isString()",
+      "maxResults": "isNumber()",
+      "fetchBodies": "",
+      "pageToken": "isString()",
+      "startDate": "isString()",
+      "status": "isString()"
+    }
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "kind": "isString()",
+      "items": "isArray()"
+    }
+  },
+
+  "description": "Retrieves the comments for a post, possibly filtered."
+}

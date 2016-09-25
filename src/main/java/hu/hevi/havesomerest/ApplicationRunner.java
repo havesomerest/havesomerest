@@ -59,7 +59,7 @@ class ApplicationRunner {
 
             long passedCount = results.values()
                                       .stream()
-                                      .filter(p -> p.getResultType().equals(ResultType.PASSED))
+                                      .filter(p -> ResultType.PASSED.equals(p.getResultType()))
                                       .count();
 
             log.info(MessageFormat.format("{0} of {1} test PASSED, {2} FAILED\n",

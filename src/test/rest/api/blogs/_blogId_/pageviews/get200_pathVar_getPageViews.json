@@ -1,0 +1,17 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {"range": "isString()"}
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "counts": "isArray()",
+      "kind": "isString()",
+      "blogId": "isString()"
+    }
+  },
+
+  "description": "Retrieve pageview stats for a Blog."
+}

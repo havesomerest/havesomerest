@@ -1,0 +1,13 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {"maxPosts": "isNumber()"}
+  },
+
+  "response": {
+    "headers": {},
+    "body": {"kind": "isString()"}
+  },
+
+  "description": "Gets one blog and user info pair by blogId and userId."
+}

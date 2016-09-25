@@ -46,16 +46,20 @@ public class ThymeleafBasedReportGenerator implements ReportGenerator {
         List<ReportFileTemplateTestResult> convertedResults = new LinkedList<>();
         results.keySet().forEach(key -> {
             ReportFileTemplateTestResult result = new ReportFileTemplateTestResult();
-            result.setRequestJson(key.getRequest()
-                                     .toString(2));
+            if (key.hasRequest()) {
+                result.setRequestJson(key.getRequest()
+                                         .toString(2));
+            }
 
 
             Optional<JSONObject> actualResponseJson = Optional.ofNullable(results.get(key)
                                                                                  .getResponseBody());
             actualResponseJson.ifPresent(r -> result.setActualResponseJson(actualResponseJson.get().toString(2)));
 
-            result.setExpectedResponseJson(key.getResponse()
-                                              .toString(2));
+            if (key.hasResponse()) {
+                result.setExpectedResponseJson(key.getResponse()
+                                                  .toString(2));
+            }
             convertedResults.add(result);
         });
         return convertedResults;

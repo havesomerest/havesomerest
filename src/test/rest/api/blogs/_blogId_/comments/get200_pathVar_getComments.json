@@ -1,0 +1,23 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {
+      "endDate": "isString()",
+      "maxResults": "isNumber()",
+      "fetchBodies": "",
+      "pageToken": "isString()",
+      "startDate": "isString()",
+      "status": "isString()"
+    }
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "kind": "isString()",
+      "items": "isArray()"
+    }
+  },
+
+  "description": "Retrieves the comments for a blog, across all posts, possibly filtered."
+}

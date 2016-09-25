@@ -1,0 +1,20 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {
+      "q": "isString()",
+      "fetchBodies": "",
+      "orderBy": "isString()"
+    }
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "kind": "isString()",
+      "items": "isArray()"
+    }
+  },
+
+  "description": "Search for a post."
+}

@@ -1,0 +1,27 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {
+      "view": "isString()",
+      "endDate": "isString()",
+      "fetchImages": "",
+      "maxResults": "isNumber()",
+      "fetchBodies": "",
+      "orderBy": "isString()",
+      "pageToken": "isString()",
+      "startDate": "isString()",
+      "labels": "isString()",
+      "status": "isString()"
+    }
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "kind": "isString()",
+      "items": "isArray()"
+    }
+  },
+
+  "description": "Retrieves a list of posts, possibly filtered."
+}

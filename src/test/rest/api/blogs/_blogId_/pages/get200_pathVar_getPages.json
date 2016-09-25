@@ -1,0 +1,22 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {
+      "view": "isString()",
+      "maxResults": "isNumber()",
+      "fetchBodies": "",
+      "pageToken": "isString()",
+      "status": "isString()"
+    }
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "kind": "isString()",
+      "items": "isArray()"
+    }
+  },
+
+  "description": "Retrieves the pages for a blog, optionally including non-LIVE statuses."
+}

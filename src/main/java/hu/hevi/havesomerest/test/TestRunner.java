@@ -47,7 +47,7 @@ public class TestRunner {
              .forEach(test -> {
                  TestResult.TestResultBuilder testResultBuilder = TestResult.builder();
                  Optional<ResponseEntity<String>> response = Optional.empty();
-                 String endPoint = endPointNameBuilder.build(test);
+                 String endPoint = endPointNameBuilder.build(test.getEndpointParts());
                  try {
 
                      response = fireRequest(endPoint, test);
@@ -56,7 +56,10 @@ public class TestRunner {
                          log.debug(actualResponse.getStatusCode().toString() + " -> " + actualResponse.toString());
 
 
-                         JSONObject responseObject = new JSONObject(actualResponse.getBody());
+                         JSONObject responseObject = new JSONObject();
+                         if (actualResponse.hasBody()) {
+                             responseObject = new JSONObject(actualResponse.getBody());
+                         }
 
                          testResultBuilder.statusCode(actualResponse.getStatusCode())
                                           .responseBody(responseObject)
@@ -87,7 +90,7 @@ public class TestRunner {
                                               actualResponse.getStatusCode().toString(),
                                               test.getStatusCode());
         assertTrue(message, actualResponse.getStatusCode().toString().equals(test.getStatusCode()));
-        assertTrue("Test selective body not equals", equalityChecker.equals(test.getResponse(), responseObject));
+        assertTrue("Test body not equals", equalityChecker.equals(test.getResponse(), responseObject));
         assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
         resultLogger.logPassed(test, endPoint, actualResponse);
     }
@@ -97,7 +100,10 @@ public class TestRunner {
 
         HttpHeaders headers = test.getRequestHeaders();
 
-        String requestBody = test.getRequest().toString();
+        String requestBody = "";
+        if (test.hasRequest()) {
+            requestBody = test.getRequest().toString();
+        }
 
         HttpEntity<?> entity = new HttpEntity<>(requestBody, headers);
 
@@ -119,12 +125,13 @@ public class TestRunner {
         log.info(MessageFormat.format("Sending {0} request to: {1}",
                  httpMethod.toString(),
                  uri.toString()));
-
-        response = Optional.ofNullable(restTemplate.exchange(
-                uri,
-                httpMethod,
-                entity,
-                String.class));
+        if (!httpMethod.equals(HttpMethod.PATCH)) {
+            response = Optional.ofNullable(restTemplate.exchange(
+                    uri,
+                    httpMethod,
+                    entity,
+                    String.class));
+        }
         return response;
     }
 }

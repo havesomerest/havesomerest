@@ -1,0 +1,10 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {}
+  },
+
+  "response": {"headers": {}},
+
+  "description": "Delete a comment by ID."
+}

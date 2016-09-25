@@ -1,0 +1,28 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {
+      "view": "isString()",
+      "url": "isString()"
+    }
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "pages": "isObject()",
+      "kind": "isString()",
+      "name": "isString()",
+      "description": "isString()",
+      "published": "2016-08-03",
+      "id": "isString()",
+      "locale": "hu",
+      "posts": "isObject()",
+      "updated": "2016-09-15",
+      "url": "isString()",
+      "status": "ACTIVE"
+    }
+  },
+
+  "description": "Retrieve a Blog by URL."
+}

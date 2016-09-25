@@ -1,0 +1,54 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {
+      "maxComments": "isNumber()",
+      "fetchImages": "",
+      "publish": "",
+      "fetchBody": "",
+      "revert": ""
+    }
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "images": "isArray()",
+      "author": "Hevi",
+      "kind": "isString()",
+      "published": "2016-08-03",
+      "blog": {
+        "createdAt": "2016-08-30",
+        "author": "Hevi",
+        "text": "dolor sit amet, iusto commodo vidisse an eum, usu te sumo periculis argumentum. Primis delenit accusamus ea pro, pri ea erant exerci quaestio. Ex per mnesarchum definiebas. Cu eos illud aliquid meliore, nostrud corrumpit pri ne. Est iracundia prodesset ad. Purto mentitum sed cu.",
+        "title": "Lorem ipsum",
+        "tags": [
+          "lorem",
+          "ipsum",
+          "dolor",
+          "sit",
+          "amet"
+        ]
+      },
+      "title": "isString()",
+      "content": "isString()",
+      "url": "isString()",
+      "labels": [
+        "lorem",
+        "ipsum",
+        "dolor",
+        "sit",
+        "amet"
+      ],
+      "replies": "isObject()",
+      "readerComments": "isString()",
+      "location": "isObject()",
+      "id": "isString()",
+      "titleLink": "isString()",
+      "updated": "2016-09-15",
+      "status": "ACTIVE"
+    }
+  },
+
+  "description": "Update a post. This method supports patch semantics."
+}

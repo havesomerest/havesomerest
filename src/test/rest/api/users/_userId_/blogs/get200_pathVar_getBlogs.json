@@ -1,0 +1,22 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {
+      "fetchUserInfo": "",
+      "view": "isString()",
+      "role": "isString()",
+      "status": "isString()"
+    }
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "kind": "isString()",
+      "items": "isArray()",
+      "blogUserInfos": "isArray()"
+    }
+  },
+
+  "description": "Retrieves a list of blogs, possibly filtered."
+}

@@ -1,0 +1,26 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {
+      "view": "isString()",
+      "endDate": "isString()",
+      "maxResults": "isNumber()",
+      "fetchBodies": "",
+      "orderBy": "isString()",
+      "pageToken": "isString()",
+      "startDate": "isString()",
+      "labels": "isString()",
+      "status": "isString()"
+    }
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "kind": "isString()",
+      "items": "isArray()"
+    }
+  },
+
+  "description": "Retrieves a list of post and post user info pairs, possibly filtered. The post user info contains per-user information about the post, such as access rights, specific to the user."
+}

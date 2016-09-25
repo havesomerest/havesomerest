@@ -1,0 +1,22 @@
+{
+  "request": {
+    "headers": {},
+    "parameters": {}
+  },
+
+  "response": {
+    "headers": {},
+    "body": {
+      "blogs": "isObject()",
+      "created": "isString()",
+      "displayName": "isString()",
+      "kind": "isString()",
+      "about": "isString()",
+      "id": "isString()",
+      "locale": "hu",
+      "url": "isString()"
+    }
+  },
+
+  "description": "Gets one user by ID."
+}
