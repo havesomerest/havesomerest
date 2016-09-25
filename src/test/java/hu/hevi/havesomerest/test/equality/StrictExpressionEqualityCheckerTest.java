@@ -307,6 +307,7 @@ public class StrictExpressionEqualityCheckerTest {
         // GIVEN
         JSONObject expectedResponse = new JSONObject("{'kind': 'COMMENT', 'items': [{'id': 'isNumber', 'comment': 'isString'}]}");
         JSONObject actualResponse = new JSONObject("{'kind': 'COMMENT', 'items': [{'id': 'isNumber', 'comment': 'isString'}]}");
+
         // WHEN
         Boolean actual = underTest.equals(expectedResponse, actualResponse);
 
@@ -317,8 +318,22 @@ public class StrictExpressionEqualityCheckerTest {
     @org.junit.Test
     public void testEx2() {
         // GIVEN
-        JSONObject expectedResponse = new JSONObject("{'items': [{'id': 'isNumber', 'comment': 'isString'}]}");
-        JSONObject actualResponse = new JSONObject("{'items': [{'id': 'isNumber', 'comment': 'isString'}]}");
+        JSONObject expectedResponse = new JSONObject("{'kind': 'COMMENT', 'items': [{'id': 'isNumber()', 'comment': 'isString()'}]}");
+        JSONObject actualResponse = new JSONObject("{'kind': 'COMMENT', 'items': [{'id': 'isNumber()', 'comment': 'isString()'}]}");
+
+        // WHEN
+        Boolean actual = underTest.equals(expectedResponse, actualResponse);
+
+        // THEN
+        assertTrue(actual);
+    }
+
+    @org.junit.Test
+    public void testExWithMatchingIsNumberShouldReturnTrue() {
+        // GIVEN
+        JSONObject expectedResponse = new JSONObject("{'items': [{'id': 'isNumber()'}]}");
+        JSONObject actualResponse = new JSONObject("{'items': [{'id': '123'}]}");
+
         // WHEN
         Boolean actual = underTest.equals(expectedResponse, actualResponse);
 

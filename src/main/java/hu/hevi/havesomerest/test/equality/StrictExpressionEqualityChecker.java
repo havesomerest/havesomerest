@@ -36,14 +36,12 @@ public class StrictExpressionEqualityChecker {
         final Boolean[] equals = {true};
 
         expected.keySet().forEach(key -> {
-            if (equals[0] != false) {
-                equals[0] = isEquals(expected, actual, key, true);
-            }
+            equals[0] = isEquals(expected, actual, key, true);
         });
 
         if (equals[0] != false) {
             actual.keySet().forEach(key -> {
-                equals[0] = isEquals(actual, expected, key, false);
+                equals[0] = isEquals(expected, actual, key, false);
             });
         }
         return equals[0];
@@ -85,12 +83,16 @@ public class StrictExpressionEqualityChecker {
                 equals = true;
             } else if(isBothEmpty(expected, actual, key)) {
                 equals = true;
-            } else if (checkForExpression && isExpression((String) expected.get(key))) {
+            } else if (checkForExpression && expected.get(key) instanceof String && isExpression((String) expected.get(key))) {
                 equals = evaluator.evaluate((String) expected.get(key), actual.get(key));
-            } else if (!checkForExpression && isExpression((String) actual.get(key))) {
+            } else if (!checkForExpression && actual.get(key) instanceof String && isExpression((String) actual.get(key))) {
                 equals = evaluator.evaluate((String) actual.get(key), expected.get(key));
-            } else if (!hasKey(actual, key) || !isValueEquals(expected, actual, key)) {
-                    equals = false;
+            } else if (checkForExpression && actual.get(key) instanceof String && isExpression((String) actual.get(key))) {
+                equals = evaluator.evaluate((String) expected.get(key), actual.get(key));
+            } else if ((!hasKey(actual, key) || !isValueEquals(expected, actual, key)) && expected.get(key) instanceof String && actual.get(key) instanceof String && !(isExpression((String) expected.get(key)) || isExpression((String) actual.get(key)))) {
+                equals = false;
+            } else {
+                equals = true;
             }
         } catch (ClassCastException e) {
             equals = false;

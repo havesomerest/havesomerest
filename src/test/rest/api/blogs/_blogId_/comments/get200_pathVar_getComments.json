@@ -2,20 +2,28 @@
   "request": {
     "headers": {},
     "parameters": {
-      "endDate": "isString()",
-      "maxResults": "isNumber()",
-      "fetchBodies": "",
-      "pageToken": "isString()",
-      "startDate": "isString()",
-      "status": "isString()"
+      "endDate": "2016-09-25",
+      "maxResults": "10",
+      "fetchBodies": "false",
+      "pageToken": "adsf7a8wr98ja-8nauw89w377-e8wasdfasf",
+      "startDate": "2016-09-24",
+      "status": "ACTIVE"
     }
   },
 
   "response": {
     "headers": {},
     "body": {
-      "kind": "isString()",
-      "items": "isArray()"
+      "kind": "COMMENT",
+      "items": [
+        {
+          "id": "isNumber()",
+          "comment": "isString()"
+        },
+        {
+          "id": "isNumber()",
+          "comment": "isString()"
+        }]
     }
   },
 
