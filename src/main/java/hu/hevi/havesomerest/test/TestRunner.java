@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 @Slf4j
 public class TestRunner {
 
+    private static final int TIMEOUT = 1000;
     @Autowired
     private TestProperties testProperties;
     @Autowired
@@ -132,13 +134,19 @@ public class TestRunner {
         log.info(MessageFormat.format("Sending {0} request to: {1}",
                  httpMethod.toString(),
                  uri.toString()));
-        if (!httpMethod.equals(HttpMethod.PATCH)) {
-            response = Optional.ofNullable(restTemplate.exchange(
-                    uri,
-                    httpMethod,
-                    entity,
-                    String.class));
-        }
+
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(TIMEOUT);
+        requestFactory.setReadTimeout(TIMEOUT);
+
+        restTemplate.setRequestFactory(requestFactory);
+
+        response = Optional.ofNullable(restTemplate.exchange(
+                uri,
+                httpMethod,
+                entity,
+                String.class));
+
         return response;
     }
 }
