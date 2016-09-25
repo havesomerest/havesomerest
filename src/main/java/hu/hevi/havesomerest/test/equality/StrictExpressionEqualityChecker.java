@@ -26,14 +26,10 @@ public class StrictExpressionEqualityChecker {
 
     public boolean equals(JSONObject expected, JSONObject actual) {
         if (expected == null && actual == null) {
-            System.out.println("BOTH NULL OR EMPTY");
             return true;
         } else if (expected == null && actual != null && actual.length() == 0) {
-            System.out.println("actual: " + actual);
-            System.out.println("EXPECTED NULL OR EMPTY");
             return true;
         } else if (expected != null && actual == null) {
-            System.out.println("ACTUAL NULL OR EMPTY");
             return false;
         }
 
