@@ -340,4 +340,54 @@ public class StrictExpressionEqualityCheckerTest {
         // THEN
         assertTrue(actual);
     }
+
+    @org.junit.Test
+    public void testExWWhenExpectedObjectIsCompletelyDifferentFromActualShouldReturnFalse() {
+        // GIVEN
+        JSONObject expectedResponse = new JSONObject("{" +
+                                                             "'status':\n" + "'ACTIVE',\n" +
+                                                             "'updated':\n" + "'2016-09-15',\n" +
+                                                             "'url':\n" + "'isString()'\n" +
+                                                             "}");
+
+        JSONObject actualResponse = new JSONObject("{" +
+
+
+
+
+                                                           "'name':\n" + "'My Blog Url',\n" +
+                                                           "'pages':\n" + "'isObject()',\n" +
+                                                           "'posts':\n" + "'mypostitemitemmypost',\n" +
+                                                           "'published':\n" + "'2016-08-03',\n" +
+                                                           "'status':\n" + "'ACTIVE',\n" +
+
+                                                           "}");
+        // WHEN
+        Boolean actual = underTest.equals(expectedResponse, actualResponse);
+
+        // THEN
+        assertFalse(actual);
+    }
+
+    @org.junit.Test
+    public void testExWWhenExpectedIsObjectHasEqualAfterwardsShouldReturnFalse() {
+        // GIVEN
+        JSONObject expectedResponse = new JSONObject("{" +
+                                                             "'status':\n" + "'ACTIVE',\n" +
+                                                             "'pages':\n" + "'isObject()',\n" +
+                                                             "'updated':\n" + "'2016-09-15',\n" +
+                                                             "}");
+
+        JSONObject actualResponse = new JSONObject("{" +
+                                                           "'status':\n" + "'ACTIVE',\n" +
+                                                           "'pages':\n" + "'myresponsenotobject',\n" +
+                                                           "'updated':\n" + "'2016-09-15',\n" +
+
+                                                           "}");
+        // WHEN
+        Boolean actual = underTest.equals(expectedResponse, actualResponse);
+
+        // THEN
+        assertFalse(actual);
+    }
 }

@@ -31,17 +31,23 @@ public class StrictExpressionEqualityChecker {
             return true;
         } else if (expected != null && actual == null) {
             return false;
+        } else if (expected.length() != actual.length()) {
+            return false;
         }
 
         final Boolean[] equals = {true};
 
         expected.keySet().forEach(key -> {
-            equals[0] = isEquals(expected, actual, key, true);
+            if (equals[0] != false) {
+                equals[0] = isEquals(expected, actual, key, true);
+            }
         });
 
         if (equals[0] != false) {
             actual.keySet().forEach(key -> {
-                equals[0] = isEquals(expected, actual, key, false);
+                if (equals[0] != false) {
+                    equals[0] = isEquals(expected, actual, key, false);
+                }
             });
         }
         return equals[0];
