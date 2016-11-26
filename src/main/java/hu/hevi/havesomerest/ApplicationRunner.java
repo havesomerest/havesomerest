@@ -2,10 +2,10 @@ package hu.hevi.havesomerest;
 
 import hu.hevi.havesomerest.common.EndPointNameBuilder;
 import hu.hevi.havesomerest.converter.ToTestConverter;
+import hu.hevi.havesomerest.html.ReportGenerator;
 import hu.hevi.havesomerest.io.StructureReader;
 import hu.hevi.havesomerest.io.TestDirectory;
-import hu.hevi.havesomerest.report.html.ReportGenerator;
-import hu.hevi.havesomerest.report.json.ResultJsonGenerator;
+import hu.hevi.havesomerest.json.ResultJsonGenerator;
 import hu.hevi.havesomerest.test.ResultType;
 import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.test.TestResult;
