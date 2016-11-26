@@ -11,7 +11,6 @@ import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.test.TestResult;
 import hu.hevi.havesomerest.test.TestRunner;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -52,7 +51,7 @@ class ApplicationRunner {
     void run() {
         try {
             Map<Path, Optional<TestDirectory>> filesByDirectory = structureReader.getStructure();
-            Map<Test, JSONObject> tests = toTestConverter.convert(filesByDirectory);
+            Map<Test, String> tests = toTestConverter.convert(filesByDirectory);
             Map<Test, TestResult> results = testRunner.runTests(tests.keySet());
 
             log.info("---------------\n");

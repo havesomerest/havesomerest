@@ -390,4 +390,5 @@ public class StrictExpressionEqualityCheckerTest {
         // THEN
         assertFalse(actual);
     }
+
 }

@@ -100,7 +100,7 @@ public class TestRunner {
                                               actualResponse.getStatusCode().toString(),
                                               test.getStatusCode());
         assertTrue(message, actualResponse.getStatusCode().toString().equals(test.getStatusCode()));
-        assertTrue("Test body not equals", equalityChecker.equals(test.getResponse(), responseObject));
+        assertTrue("Test body not equals", equalityChecker.equals(new JSONObject(test.getResponse()), responseObject));
         assertTrue("Test headers keys not equals", actualResponse.getHeaders().keySet().containsAll(test.getResponseHeaders().keySet()));
     }
 

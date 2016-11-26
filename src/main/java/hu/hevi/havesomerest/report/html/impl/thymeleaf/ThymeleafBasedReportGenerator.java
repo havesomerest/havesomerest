@@ -47,8 +47,8 @@ public class ThymeleafBasedReportGenerator implements ReportGenerator {
         results.keySet().forEach(key -> {
             ReportFileTemplateTestResult result = new ReportFileTemplateTestResult();
             if (key.hasRequest()) {
-                result.setRequestJson(key.getRequest()
-                                         .toString(2));
+                JSONObject requestJson = new JSONObject(key.getRequest());
+                result.setRequestJson(requestJson.toString(2));
             }
 
 
@@ -57,8 +57,8 @@ public class ThymeleafBasedReportGenerator implements ReportGenerator {
             actualResponseJson.ifPresent(r -> result.setActualResponseJson(actualResponseJson.get().toString(2)));
 
             if (key.hasResponse()) {
-                result.setExpectedResponseJson(key.getResponse()
-                                                  .toString(2));
+                JSONObject responseJson = new JSONObject(key.getResponse());
+                result.setExpectedResponseJson(responseJson.toString(2));
             }
             convertedResults.add(result);
         });

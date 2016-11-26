@@ -23,14 +23,14 @@ public class FileBasedResultJsonGenerator implements ResultJsonGenerator {
     public static final String RESULT_FILE_PATH_NAME = "target/havesomerest/result.json";
 
     @Override
-    public void generateResult(Map<Test, JSONObject> tests, Map<Test, TestResult> results) throws IOException {
+    public void generateResult(Map<Test, String> tests, Map<Test, TestResult> results) throws IOException {
         JSONArray logEntries = new JSONArray();
         results.keySet().forEach(key -> {
             Test test = key;
             TestResult testResult = results.get(key);
 
             JSONObject testFileEntry = new JSONObject();
-            JSONObject testFile = tests.get(test);
+            JSONObject testFile = new JSONObject(tests.get(test));
             testFileEntry.put("testCase", testFile);
 
             JSONObject actualResponse = new JSONObject();
