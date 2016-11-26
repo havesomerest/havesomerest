@@ -131,9 +131,10 @@ public class TestRunner {
         Optional<ResponseEntity<String>> response = Optional.empty();
         String finalEndPoint = endPoint;
 
-        log.info(MessageFormat.format("Sending {0} request to: {1}",
+        log.info(MessageFormat.format("Sending {0} request to: {1}\nbody: {2}",
                  httpMethod.toString(),
-                 uri.toString()));
+                 uri.toString()),
+                 test.getRequest());
 
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setConnectTimeout(TIMEOUT);

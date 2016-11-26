@@ -4,6 +4,10 @@
     "parameters": {
       "view": "isString()",
       "url": "isString()"
+    },
+    "body": {
+      "name": "isString()",
+      "kind": "isString()"
     }
   },
 

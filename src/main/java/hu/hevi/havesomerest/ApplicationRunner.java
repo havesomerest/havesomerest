@@ -68,8 +68,8 @@ class ApplicationRunner {
 
             log.info("---------------\n");
 
-            resultJsonGenerator.generateResult(tests, results);
-            reportGenerator.generateReport(results);
+//            resultJsonGenerator.generateResult(tests, results);
+            //reportGenerator.generateReport(results);
 
             log.info(MessageFormat.format("Finished at: {0}", LocalDateTime.now()));
 

@@ -23,7 +23,7 @@ public class ResultLogger {
     }
 
     void logFailed(Test test, String finalEndPoint, HttpClientErrorException e) {
-        String error = String.format(RED + "FAILED -> %-4s %3s %-25s - %-35s -> %s" + CLEAR,
+        String error = String.format(RED + "FAILED -> %-4s %3s %-25s - %-35s -> %s\n" + CLEAR,
                                      test.getMethod().toString().toUpperCase(),
                                      test.getStatusCode(),
                                      finalEndPoint,
@@ -33,7 +33,7 @@ public class ResultLogger {
     }
 
     void logFailed(Test test, String finalEndPoint, String message) {
-        String error = String.format(RED + "FAILED -> %-4s %3s %-25s - %-35s -> %s" + CLEAR,
+        String error = String.format(RED + "FAILED -> %-4s %3s %-25s - %-35s -> %s\n" + CLEAR,
                                      test.getMethod().toString().toUpperCase(),
                                      test.getStatusCode(),
                                      finalEndPoint,
