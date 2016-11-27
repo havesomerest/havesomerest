@@ -1,6 +1,9 @@
 {
   "request": {
-    "headers": {},
+    "headers": {
+      "asdfasdfasdf": "weqweqweqwewqeqw",
+      "accept-charset": "utf-8"
+    },
     "parameters": {
       "view": "isString()",
       "url": "isString()"

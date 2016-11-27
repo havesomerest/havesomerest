@@ -18,10 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.assertTrue;
 
@@ -133,8 +130,8 @@ public class TestRunner {
 
         log.info(MessageFormat.format("Sending {0} request to: {1}\nbody: {2}",
                  httpMethod.toString(),
-                 uri.toString()),
-                 test.getRequest());
+                 uri.toString(),
+                 test.getRequest()));
 
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setConnectTimeout(TIMEOUT);
