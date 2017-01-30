@@ -11,6 +11,7 @@ import hu.hevi.havesomerest.test.Test;
 import hu.hevi.havesomerest.test.TestResult;
 import hu.hevi.havesomerest.test.TestRunner;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.maven.plugin.MojoFailureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -48,7 +49,7 @@ class ApplicationRunner {
     @Autowired
     private ResultJsonGenerator resultJsonGenerator;
 
-    void run() {
+    void run() throws MojoFailureException {
         try {
             Map<Path, Optional<TestDirectory>> filesByDirectory = structureReader.getStructure();
             Map<Test, String> tests = toTestConverter.convert(filesByDirectory);
@@ -61,10 +62,12 @@ class ApplicationRunner {
                                       .filter(p -> ResultType.PASSED.equals(p.getResultType()))
                                       .count();
 
+            long failedTestCount = results.keySet().size() - passedCount;
+
             log.info(MessageFormat.format("{0} of {1} test PASSED, {2} FAILED\n",
                                           passedCount,
                                           results.keySet().size(),
-                                          results.keySet().size() - passedCount));
+                                          failedTestCount));
 
             log.info("---------------\n");
 
@@ -73,10 +76,10 @@ class ApplicationRunner {
 
             log.info(MessageFormat.format("Finished at: {0}", LocalDateTime.now()));
 
-            log.debug(environment.containsProperty("asdf") + " : " + environment.getProperty("asdf"));
+            if (failedTestCount > 0l) {
+                throw new MojoFailureException(failedTestCount + " test failed.");
+            }
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             ((ConfigurableApplicationContext) ctx).close();
