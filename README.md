@@ -1,3 +1,11 @@
+# Testing and mocking in microservice architecture with a contract based solution
+
+In a microserice environment the high number of different applications and the even higher number of interaction between them could cause lots of headache, slow end-to-end tests with high infrastructure requirements, and other expected and unexpected problems. A developer integrating with an other service without proper, well maintained mocks has to set-up and run locally, or use a shared instance of that application, which has resource needs, and/or prone of breaking.
+
+A microservice project (and others as well) should have API tests. But maintaining a different set of data, to be able to supply other teams with a reliable mock representation is a lot of effort. But why would we double the requiered work if it's not necessary? As our application has API tests, which are validating the correctness of the dependency application, we could use those test as verified, and always up-to-date mock data. This can be achieved by having the same (file) format for the tests and for the mocks as well.
+
+Because the tests and the mocks are the same, writing tests is basically means mocking that API as well. So if a team needs to develop against your API, you don't need to setup and maintain a full development environment, they can just use the tests as mocks. In a microservice based environment you can save tons of effort with this approach. And it has the benefit that all the additional mock scenarios the other team(s) specif(y/ies) are actual test cases for your team to fulfill!
+
 Havesomerest is a (REST) API test automation framework, currently in a proof of concept state. The tests are written in plain JSON or XML format and placed in the right place in the folder structure.
 
 # The concept
